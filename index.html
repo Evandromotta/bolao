@@ -1330,7 +1330,15 @@ function hideConfirmModal(){
   document.getElementById("confirmModal").style.display = "none";
   pendingConfirmMatchId = null;
 }
-document.getElementById("confirmCancel").addEventListener("click", hideConfirmModal);
+document.getElementById("confirmCancel").addEventListener("click", async ()=>{
+  if(pendingConfirmMatchId!=null){
+    const id = pendingConfirmMatchId;
+    state.picks[state.active][id] = { h:"", a:"" };
+    await storeSet(slug(state.active), state.picks[state.active]);
+  }
+  hideConfirmModal();
+  render();
+});
 document.getElementById("confirmYes").addEventListener("click", async ()=>{
   if(pendingConfirmMatchId==null) return;
   const id = pendingConfirmMatchId;
