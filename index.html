@@ -177,11 +177,6 @@ body{margin:0;}
   cursor:pointer;
 }
 .add-participant button:hover{background:var(--turf);color:#06160E;}
-.pill .remove{
-  margin-left:8px;opacity:.6;font-weight:700;
-}
-.pill .remove:hover{opacity:1;color:var(--bad);}
-
 /* ---------- ROUND NAV ---------- */
 .round-nav{
   display:flex;align-items:center;justify-content:center;gap:18px;
@@ -1020,7 +1015,7 @@ function renderParticipants(){
   const row = document.getElementById("participantRow");
   if(state.tab!=="palpites"){ row.innerHTML=""; return; }
   let html = state.participants.map(p =>
-    `<button class="pill ${p===state.active?'active':''}" data-p="${p}">${p}<span class="remove" data-remove="${p}">✕</span></button>`
+    `<button class="pill ${p===state.active?'active':''}" data-p="${p}">${p}</button>`
   ).join("");
   html += `<div class="add-participant">
       <input type="text" id="newParticipant" placeholder="Nome do participante" maxlength="24">
@@ -1042,21 +1037,9 @@ function renderParticipants(){
   });
 
   row.querySelectorAll(".pill[data-p]").forEach(btn=>{
-    btn.addEventListener("click", async (e)=>{
-      if(e.target.dataset.remove) return;
+    btn.addEventListener("click", async ()=>{
       state.active = btn.dataset.p;
       await ensurePicks(state.active);
-      render();
-    });
-  });
-  row.querySelectorAll(".remove").forEach(el=>{
-    el.addEventListener("click", async (e)=>{
-      e.stopPropagation();
-      const name = el.dataset.remove;
-      state.participants = state.participants.filter(p=>p!==name);
-      delete state.picks[name];
-      if(state.active===name) state.active = state.participants[0] || null;
-      await saveParticipants();
       render();
     });
   });
