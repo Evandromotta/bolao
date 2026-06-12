@@ -315,12 +315,12 @@ body{margin:0;}
 .match-row .result-line{
   display:flex;align-items:center;gap:8px;letter-spacing:.04em;
 }
-.match-row .mini-flag{
+.mini-flag{
   display:inline-block;line-height:0;
   width:20px;height:15px;border-radius:2px;overflow:hidden;
   box-shadow:0 0 0 1px #E1E6E3;
 }
-.match-row .mini-flag svg{display:block;width:100%;height:100%;}
+.mini-flag svg{display:block;width:100%;height:100%;}
 .match-row .group-tag{
   display:inline-block;
   font-family:'Oswald',sans-serif;font-weight:700;font-size:.62rem;
@@ -446,6 +446,16 @@ body{margin:0;}
 }
 .modal-box p{
   font-size:.8rem;color:var(--muted);margin:0 0 16px;
+}
+.confirm-score-line{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  flex-wrap:wrap;
+  font-family:'Oswald',sans-serif;font-weight:600;
+  font-size:.95rem;color:var(--cream);
+  margin-bottom:10px;
+}
+.confirm-score-line b{
+  color:var(--amber);font-size:1.2rem;letter-spacing:.05em;
 }
 .modal-box input{
   width:100%;
@@ -1194,6 +1204,16 @@ function bindScoreInputs(mode){
         savePicks(state.active);
         // atualiza badge/linha de resultado sem re-renderizar tudo
         refreshCardFeedback(id);
+
+        // se os dois placares foram preenchidos e o palpite ainda não foi confirmado,
+        // pede confirmação automaticamente
+        const pick = state.picks[state.active][id];
+        const bothFilled = pick.h!=="" && pick.h!==undefined && pick.a!=="" && pick.a!==undefined;
+        const match = MATCHES.find(m=>m.id===id);
+        if(bothFilled && !pick.locked && !matchStarted(match) && pendingConfirmMatchId===null){
+          inp.blur();
+          showConfirmModal(id);
+        }
       } else {
         const obj = state.results[id] || {};
         obj[side] = v;
@@ -1298,8 +1318,12 @@ function showConfirmModal(matchId){
   const pick = state.picks[state.active][matchId];
   pendingConfirmMatchId = matchId;
   document.getElementById("confirmText").innerHTML =
-    `${match.h} <b>${pick.h} × ${pick.a}</b> ${match.a}` +
-    `<br><br>Depois de confirmado, somente o administrador (com senha) poderá alterar este palpite. Confirmar?`;
+    `<div class="confirm-score-line">
+       ${flagSVG(match.hi,"mini-flag")} ${match.h}
+       <b>${pick.h} × ${pick.a}</b>
+       ${match.a} ${flagSVG(match.ai,"mini-flag")}
+     </div>` +
+    `<br>Depois de confirmado, somente o administrador (com senha) poderá alterar este palpite. Confirmar?`;
   document.getElementById("confirmModal").style.display = "flex";
 }
 function hideConfirmModal(){
