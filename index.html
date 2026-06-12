@@ -877,9 +877,6 @@ async function ensurePicks(name){
   return state.picks[name];
 }
 
-const savePicks = debounce(async (name) => {
-  await storeSet(slug(name), state.picks[name]);
-}, 400);
 
 const saveResults = debounce(async () => {
   await storeSet(RESULTS_KEY, state.results);
@@ -1201,7 +1198,7 @@ function bindScoreInputs(mode){
         const obj = state.picks[state.active][id] || {};
         obj[side] = v;
         state.picks[state.active][id] = obj;
-        savePicks(state.active);
+        // não persiste ainda: só salva de fato quando o usuário confirmar o palpite no pop-up
         // atualiza badge/linha de resultado sem re-renderizar tudo
         refreshCardFeedback(id);
 
