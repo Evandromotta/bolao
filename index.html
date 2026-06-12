@@ -279,6 +279,29 @@ body{margin:0;}
   letter-spacing:.06em;text-transform:uppercase;
   color:#B58A00;
 }
+.match-row .lock-tag.confirmed{color:var(--turf-dim);}
+.confirm-row{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  flex-wrap:wrap;
+}
+.confirmed-badge{
+  font-family:'Oswald',sans-serif;font-weight:700;
+  font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--turf-dim);
+}
+.confirm-btn{
+  font-family:'Oswald',sans-serif;font-weight:700;
+  font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+  border-radius:999px;padding:7px 16px;cursor:pointer;
+  border:1px solid var(--turf-dim);background:var(--turf-dim);color:#fff;
+}
+.confirm-btn:hover{background:#176038;}
+.unlock-pick-btn{
+  font-family:'Oswald',sans-serif;font-weight:700;
+  font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;
+  border-radius:999px;padding:5px 12px;cursor:pointer;
+  border:1px solid #DCE4E0;background:#FFFFFF;color:#33433C;
+}
 .match-row .match-foot{
   display:flex;flex-direction:column;align-items:center;gap:6px;
   text-align:center;margin-top:10px;padding-top:10px;
@@ -378,7 +401,30 @@ body{margin:0;}
   padding:12px 20px 0;
 }
 
-/* ---------- MODAL DE SENHA ---------- */
+/* ---------- BARRA DA ABA RESULTADOS ---------- */
+.results-bar{
+  max-width:560px;margin:0 auto;
+  background:#EEF2F0;
+  display:flex;flex-wrap:wrap;gap:10px;
+  align-items:center;justify-content:space-between;
+  padding:18px 16px 4px;
+}
+.results-bar-info{
+  font-size:.72rem;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.results-bar-info b{color:var(--cream);font-family:'JetBrains Mono',monospace;}
+.results-bar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.bar-btn{
+  font-family:'Oswald',sans-serif;font-weight:600;
+  letter-spacing:.04em;font-size:.74rem;text-transform:uppercase;
+  border-radius:999px;padding:8px 14px;cursor:pointer;
+  border:1px solid #DCE4E0;background:#FFFFFF;color:#33433C;
+}
+.bar-btn.primary{
+  background:var(--turf-dim);border-color:var(--turf);color:#fff;
+}
+.bar-btn:hover{border-color:var(--turf);}
 .modal-overlay{
   position:fixed;inset:0;z-index:100;
   background:rgba(6,16,12,.72);
@@ -479,7 +525,7 @@ body{margin:0;}
 <div class="modal-overlay" id="pwModal" style="display:none">
   <div class="modal-box">
     <h3>Área de Resultados</h3>
-    <p>Digite a senha para lançar/editar os resultados oficiais.</p>
+    <p>Digite a senha para lançar/editar os resultados oficiais ou desbloquear palpites confirmados.</p>
     <input type="password" id="pwInput" placeholder="Senha" inputmode="numeric">
     <div class="modal-error" id="pwError"></div>
     <div class="modal-actions">
@@ -489,80 +535,91 @@ body{margin:0;}
   </div>
 </div>
 
+<div class="modal-overlay" id="confirmModal" style="display:none">
+  <div class="modal-box">
+    <h3>Confirmar palpite</h3>
+    <p id="confirmText"></p>
+    <div class="modal-actions">
+      <button id="confirmCancel">Cancelar</button>
+      <button class="primary" id="confirmYes">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const MATCHES = [
-{id:1,g:"A",d:"11/06",r:1,t:"16:00",st:"Azteca",hi:"mx",h:"México",hc:"MEX",ai:"za",a:"África do Sul",ac:"RSA"},
-{id:2,g:"A",d:"11/06",r:1,t:"23:00",st:"Akron",hi:"kr",h:"Coreia do Sul",hc:"KOR",ai:"cz",a:"Tchéquia",ac:"CZE"},
-{id:3,g:"A",d:"18/06",r:2,t:"13:00",st:"Mercedes-Benz",hi:"cz",h:"Tchéquia",hc:"CZE",ai:"za",a:"África do Sul",ac:"RSA"},
-{id:4,g:"A",d:"18/06",r:2,t:"00:00",st:"Akron",hi:"mx",h:"México",hc:"MEX",ai:"kr",a:"Coreia do Sul",ac:"KOR"},
-{id:5,g:"A",d:"24/06",r:3,t:"22:00",st:"Azteca",hi:"cz",h:"Tchéquia",hc:"CZE",ai:"mx",a:"México",ac:"MEX"},
-{id:6,g:"A",d:"24/06",r:3,t:"22:00",st:"BBVA",hi:"za",h:"África do Sul",hc:"RSA",ai:"kr",a:"Coreia do Sul",ac:"KOR"},
-{id:7,g:"B",d:"12/06",r:1,t:"16:00",st:"BMO Field",hi:"ca",h:"Canadá",hc:"CAN",ai:"ba",a:"Bósnia e Herzegovina",ac:"BIH"},
-{id:8,g:"B",d:"13/06",r:1,t:"16:00",st:"Levi's",hi:"qa",h:"Catar",hc:"QAT",ai:"ch",a:"Suíça",ac:"SUI"},
-{id:9,g:"B",d:"18/06",r:2,t:"16:00",st:"SoFi",hi:"ch",h:"Suíça",hc:"SUI",ai:"ba",a:"Bósnia e Herzegovina",ac:"BIH"},
-{id:10,g:"B",d:"18/06",r:2,t:"19:00",st:"BC Place",hi:"ca",h:"Canadá",hc:"CAN",ai:"qa",a:"Catar",ac:"QAT"},
-{id:11,g:"B",d:"24/06",r:3,t:"16:00",st:"BC Place",hi:"ch",h:"Suíça",hc:"SUI",ai:"ca",a:"Canadá",ac:"CAN"},
-{id:12,g:"B",d:"24/06",r:3,t:"16:00",st:"Lumen Field",hi:"ba",h:"Bósnia e Herzegovina",hc:"BIH",ai:"qa",a:"Catar",ac:"QAT"},
-{id:13,g:"C",d:"13/06",r:1,t:"19:00",st:"MetLife",hi:"br",h:"Brasil",hc:"BRA",ai:"ma",a:"Marrocos",ac:"MAR"},
-{id:14,g:"C",d:"13/06",r:1,t:"22:00",st:"Gillette",hi:"ht",h:"Haiti",hc:"HAI",ai:"gb-sct",a:"Escócia",ac:"SCO"},
-{id:15,g:"C",d:"19/06",r:2,t:"19:00",st:"Gillette",hi:"gb-sct",h:"Escócia",hc:"SCO",ai:"ma",a:"Marrocos",ac:"MAR"},
-{id:16,g:"C",d:"19/06",r:2,t:"22:00",st:"Lincoln Financial",hi:"br",h:"Brasil",hc:"BRA",ai:"ht",a:"Haiti",ac:"HAI"},
-{id:17,g:"C",d:"24/06",r:3,t:"19:00",st:"Hard Rock",hi:"gb-sct",h:"Escócia",hc:"SCO",ai:"br",a:"Brasil",ac:"BRA"},
-{id:18,g:"C",d:"24/06",r:3,t:"19:00",st:"Mercedes-Benz",hi:"ma",h:"Marrocos",hc:"MAR",ai:"ht",a:"Haiti",ac:"HAI"},
-{id:19,g:"D",d:"12/06",r:1,t:"22:00",st:"SoFi",hi:"us",h:"Estados Unidos",hc:"USA",ai:"py",a:"Paraguai",ac:"PAR"},
-{id:20,g:"D",d:"13/06",r:1,t:"01:00",st:"BC Place",hi:"au",h:"Austrália",hc:"AUS",ai:"tr",a:"Turquia",ac:"TUR"},
-{id:21,g:"D",d:"19/06",r:2,t:"16:00",st:"Lumen Field",hi:"us",h:"Estados Unidos",hc:"USA",ai:"au",a:"Austrália",ac:"AUS"},
-{id:22,g:"D",d:"19/06",r:2,t:"01:00",st:"Levi's",hi:"tr",h:"Turquia",hc:"TUR",ai:"py",a:"Paraguai",ac:"PAR"},
-{id:23,g:"D",d:"25/06",r:3,t:"23:00",st:"SoFi",hi:"tr",h:"Turquia",hc:"TUR",ai:"us",a:"Estados Unidos",ac:"USA"},
-{id:24,g:"D",d:"25/06",r:3,t:"23:00",st:"Levi's",hi:"py",h:"Paraguai",hc:"PAR",ai:"au",a:"Austrália",ac:"AUS"},
-{id:25,g:"E",d:"14/06",r:1,t:"14:00",st:"NRG",hi:"de",h:"Alemanha",hc:"GER",ai:"cw",a:"Curaçao",ac:"CUW"},
-{id:26,g:"E",d:"14/06",r:1,t:"20:00",st:"Lincoln Financial",hi:"ci",h:"Costa do Marfim",hc:"CIV",ai:"ec",a:"Equador",ac:"ECU"},
-{id:27,g:"E",d:"20/06",r:2,t:"17:00",st:"BMO Field",hi:"de",h:"Alemanha",hc:"GER",ai:"ci",a:"Costa do Marfim",ac:"CIV"},
-{id:28,g:"E",d:"20/06",r:2,t:"21:00",st:"Arrowhead",hi:"ec",h:"Equador",hc:"ECU",ai:"cw",a:"Curaçao",ac:"CUW"},
-{id:29,g:"E",d:"25/06",r:3,t:"17:00",st:"MetLife",hi:"ec",h:"Equador",hc:"ECU",ai:"de",a:"Alemanha",ac:"GER"},
-{id:30,g:"E",d:"25/06",r:3,t:"17:00",st:"Lincoln Financial",hi:"cw",h:"Curaçao",hc:"CUW",ai:"ci",a:"Costa do Marfim",ac:"CIV"},
-{id:31,g:"F",d:"14/06",r:1,t:"17:00",st:"AT&T",hi:"nl",h:"Holanda",hc:"NED",ai:"jp",a:"Japão",ac:"JPN"},
-{id:32,g:"F",d:"14/06",r:1,t:"23:00",st:"BBVA",hi:"se",h:"Suécia",hc:"SWE",ai:"tn",a:"Tunísia",ac:"TUN"},
-{id:33,g:"F",d:"20/06",r:2,t:"14:00",st:"NRG",hi:"nl",h:"Holanda",hc:"NED",ai:"se",a:"Suécia",ac:"SWE"},
-{id:34,g:"F",d:"20/06",r:2,t:"01:00",st:"BBVA",hi:"tn",h:"Tunísia",hc:"TUN",ai:"jp",a:"Japão",ac:"JPN"},
-{id:35,g:"F",d:"25/06",r:3,t:"20:00",st:"AT&T",hi:"jp",h:"Japão",hc:"JPN",ai:"se",a:"Suécia",ac:"SWE"},
-{id:36,g:"F",d:"25/06",r:3,t:"20:00",st:"Arrowhead",hi:"tn",h:"Tunísia",hc:"TUN",ai:"nl",a:"Holanda",ac:"NED"},
-{id:37,g:"G",d:"15/06",r:1,t:"19:00",st:"Lumen Field",hi:"be",h:"Bélgica",hc:"BEL",ai:"eg",a:"Egito",ac:"EGY"},
-{id:38,g:"G",d:"15/06",r:1,t:"01:00",st:"SoFi",hi:"ir",h:"Irã",hc:"IRN",ai:"nz",a:"Nova Zelândia",ac:"NZL"},
-{id:39,g:"G",d:"21/06",r:2,t:"16:00",st:"SoFi",hi:"be",h:"Bélgica",hc:"BEL",ai:"ir",a:"Irã",ac:"IRN"},
-{id:40,g:"G",d:"21/06",r:2,t:"22:00",st:"BC Place",hi:"nz",h:"Nova Zelândia",hc:"NZL",ai:"eg",a:"Egito",ac:"EGY"},
-{id:41,g:"G",d:"26/06",r:3,t:"00:00",st:"Lumen Field",hi:"eg",h:"Egito",hc:"EGY",ai:"ir",a:"Irã",ac:"IRN"},
-{id:42,g:"G",d:"26/06",r:3,t:"00:00",st:"BC Place",hi:"nz",h:"Nova Zelândia",hc:"NZL",ai:"be",a:"Bélgica",ac:"BEL"},
-{id:43,g:"H",d:"15/06",r:1,t:"14:00",st:"Mercedes-Benz",hi:"es",h:"Espanha",hc:"ESP",ai:"cv",a:"Cabo Verde",ac:"CPV"},
-{id:44,g:"H",d:"15/06",r:1,t:"19:00",st:"Hard Rock",hi:"sa",h:"Arábia Saudita",hc:"KSA",ai:"uy",a:"Uruguai",ac:"URU"},
-{id:45,g:"H",d:"21/06",r:2,t:"13:00",st:"Mercedes-Benz",hi:"es",h:"Espanha",hc:"ESP",ai:"sa",a:"Arábia Saudita",ac:"KSA"},
-{id:46,g:"H",d:"21/06",r:2,t:"19:00",st:"Hard Rock",hi:"uy",h:"Uruguai",hc:"URU",ai:"cv",a:"Cabo Verde",ac:"CPV"},
-{id:47,g:"H",d:"26/06",r:3,t:"21:00",st:"NRG",hi:"cv",h:"Cabo Verde",hc:"CPV",ai:"sa",a:"Arábia Saudita",ac:"KSA"},
-{id:48,g:"H",d:"26/06",r:3,t:"21:00",st:"Akron",hi:"uy",h:"Uruguai",hc:"URU",ai:"es",a:"Espanha",ac:"ESP"},
-{id:49,g:"I",d:"16/06",r:1,t:"16:00",st:"MetLife",hi:"fr",h:"França",hc:"FRA",ai:"sn",a:"Senegal",ac:"SEN"},
-{id:50,g:"I",d:"16/06",r:1,t:"19:00",st:"Gillette",hi:"iq",h:"Iraque",hc:"IRQ",ai:"no",a:"Noruega",ac:"NOR"},
-{id:51,g:"I",d:"22/06",r:2,t:"18:00",st:"Lincoln Financial",hi:"fr",h:"França",hc:"FRA",ai:"iq",a:"Iraque",ac:"IRQ"},
-{id:52,g:"I",d:"22/06",r:2,t:"21:00",st:"MetLife",hi:"no",h:"Noruega",hc:"NOR",ai:"sn",a:"Senegal",ac:"SEN"},
-{id:53,g:"I",d:"26/06",r:3,t:"16:00",st:"Gillette",hi:"no",h:"Noruega",hc:"NOR",ai:"fr",a:"França",ac:"FRA"},
-{id:54,g:"I",d:"26/06",r:3,t:"16:00",st:"BMO Field",hi:"sn",h:"Senegal",hc:"SEN",ai:"iq",a:"Iraque",ac:"IRQ"},
-{id:55,g:"J",d:"16/06",r:1,t:"22:00",st:"Arrowhead",hi:"ar",h:"Argentina",hc:"ARG",ai:"dz",a:"Argélia",ac:"ALG"},
-{id:56,g:"J",d:"16/06",r:1,t:"01:00",st:"Levi's",hi:"at",h:"Áustria",hc:"AUT",ai:"jo",a:"Jordânia",ac:"JOR"},
-{id:57,g:"J",d:"22/06",r:2,t:"14:00",st:"AT&T",hi:"ar",h:"Argentina",hc:"ARG",ai:"at",a:"Áustria",ac:"AUT"},
-{id:58,g:"J",d:"22/06",r:2,t:"00:00",st:"Levi's",hi:"jo",h:"Jordânia",hc:"JOR",ai:"dz",a:"Argélia",ac:"ALG"},
-{id:59,g:"J",d:"27/06",r:3,t:"23:00",st:"Arrowhead",hi:"dz",h:"Argélia",hc:"ALG",ai:"at",a:"Áustria",ac:"AUT"},
-{id:60,g:"J",d:"27/06",r:3,t:"23:00",st:"AT&T",hi:"jo",h:"Jordânia",hc:"JOR",ai:"ar",a:"Argentina",ac:"ARG"},
-{id:61,g:"K",d:"17/06",r:1,t:"14:00",st:"NRG",hi:"pt",h:"Portugal",hc:"POR",ai:"cd",a:"RD Congo",ac:"COD"},
-{id:62,g:"K",d:"17/06",r:1,t:"23:00",st:"Azteca",hi:"uz",h:"Uzbequistão",hc:"UZB",ai:"co",a:"Colômbia",ac:"COL"},
-{id:63,g:"K",d:"23/06",r:2,t:"14:00",st:"NRG",hi:"pt",h:"Portugal",hc:"POR",ai:"uz",a:"Uzbequistão",ac:"UZB"},
-{id:64,g:"K",d:"23/06",r:2,t:"23:00",st:"Akron",hi:"co",h:"Colômbia",hc:"COL",ai:"cd",a:"RD Congo",ac:"COD"},
-{id:65,g:"K",d:"27/06",r:3,t:"20:30",st:"Hard Rock",hi:"co",h:"Colômbia",hc:"COL",ai:"pt",a:"Portugal",ac:"POR"},
-{id:66,g:"K",d:"27/06",r:3,t:"20:30",st:"Mercedes-Benz",hi:"cd",h:"RD Congo",hc:"COD",ai:"uz",a:"Uzbequistão",ac:"UZB"},
-{id:67,g:"L",d:"17/06",r:1,t:"17:00",st:"AT&T",hi:"gb-eng",h:"Inglaterra",hc:"ENG",ai:"hr",a:"Croácia",ac:"CRO"},
-{id:68,g:"L",d:"17/06",r:1,t:"20:00",st:"BMO Field",hi:"gh",h:"Gana",hc:"GHA",ai:"pa",a:"Panamá",ac:"PAN"},
-{id:69,g:"L",d:"23/06",r:2,t:"17:00",st:"Gillette",hi:"gb-eng",h:"Inglaterra",hc:"ENG",ai:"gh",a:"Gana",ac:"GHA"},
-{id:70,g:"L",d:"23/06",r:2,t:"20:00",st:"BMO Field",hi:"pa",h:"Panamá",hc:"PAN",ai:"hr",a:"Croácia",ac:"CRO"},
-{id:71,g:"L",d:"27/06",r:3,t:"18:00",st:"MetLife",hi:"pa",h:"Panamá",hc:"PAN",ai:"gb-eng",a:"Inglaterra",ac:"ENG"},
-{id:72,g:"L",d:"27/06",r:3,t:"18:00",st:"Lincoln Financial",hi:"hr",h:"Croácia",hc:"CRO",ai:"gh",a:"Gana",ac:"GHA"}
+{id:1,g:"A",d:"11/06",r:1,t:"16:00",st:"Azteca",hi:"mx",h:"México",he:"Mexico",hc:"MEX",ai:"za",a:"África do Sul",ae:"South Africa",ac:"RSA"},
+{id:2,g:"A",d:"11/06",r:1,t:"23:00",st:"Akron",hi:"kr",h:"Coreia do Sul",he:"South Korea",hc:"KOR",ai:"cz",a:"Tchéquia",ae:"Czech Republic",ac:"CZE"},
+{id:3,g:"A",d:"18/06",r:2,t:"13:00",st:"Mercedes-Benz",hi:"cz",h:"Tchéquia",he:"Czech Republic",hc:"CZE",ai:"za",a:"África do Sul",ae:"South Africa",ac:"RSA"},
+{id:4,g:"A",d:"18/06",r:2,t:"00:00",st:"Akron",hi:"mx",h:"México",he:"Mexico",hc:"MEX",ai:"kr",a:"Coreia do Sul",ae:"South Korea",ac:"KOR"},
+{id:5,g:"A",d:"24/06",r:3,t:"22:00",st:"Azteca",hi:"cz",h:"Tchéquia",he:"Czech Republic",hc:"CZE",ai:"mx",a:"México",ae:"Mexico",ac:"MEX"},
+{id:6,g:"A",d:"24/06",r:3,t:"22:00",st:"BBVA",hi:"za",h:"África do Sul",he:"South Africa",hc:"RSA",ai:"kr",a:"Coreia do Sul",ae:"South Korea",ac:"KOR"},
+{id:7,g:"B",d:"12/06",r:1,t:"16:00",st:"BMO Field",hi:"ca",h:"Canadá",he:"Canada",hc:"CAN",ai:"ba",a:"Bósnia e Herzegovina",ae:"Bosnia and Herzegovina",ac:"BIH"},
+{id:8,g:"B",d:"13/06",r:1,t:"16:00",st:"Levi's",hi:"qa",h:"Catar",he:"Qatar",hc:"QAT",ai:"ch",a:"Suíça",ae:"Switzerland",ac:"SUI"},
+{id:9,g:"B",d:"18/06",r:2,t:"16:00",st:"SoFi",hi:"ch",h:"Suíça",he:"Switzerland",hc:"SUI",ai:"ba",a:"Bósnia e Herzegovina",ae:"Bosnia and Herzegovina",ac:"BIH"},
+{id:10,g:"B",d:"18/06",r:2,t:"19:00",st:"BC Place",hi:"ca",h:"Canadá",he:"Canada",hc:"CAN",ai:"qa",a:"Catar",ae:"Qatar",ac:"QAT"},
+{id:11,g:"B",d:"24/06",r:3,t:"16:00",st:"BC Place",hi:"ch",h:"Suíça",he:"Switzerland",hc:"SUI",ai:"ca",a:"Canadá",ae:"Canada",ac:"CAN"},
+{id:12,g:"B",d:"24/06",r:3,t:"16:00",st:"Lumen Field",hi:"ba",h:"Bósnia e Herzegovina",he:"Bosnia and Herzegovina",hc:"BIH",ai:"qa",a:"Catar",ae:"Qatar",ac:"QAT"},
+{id:13,g:"C",d:"13/06",r:1,t:"19:00",st:"MetLife",hi:"br",h:"Brasil",he:"Brazil",hc:"BRA",ai:"ma",a:"Marrocos",ae:"Morocco",ac:"MAR"},
+{id:14,g:"C",d:"13/06",r:1,t:"22:00",st:"Gillette",hi:"ht",h:"Haiti",he:"Haiti",hc:"HAI",ai:"gb-sct",a:"Escócia",ae:"Scotland",ac:"SCO"},
+{id:15,g:"C",d:"19/06",r:2,t:"19:00",st:"Gillette",hi:"gb-sct",h:"Escócia",he:"Scotland",hc:"SCO",ai:"ma",a:"Marrocos",ae:"Morocco",ac:"MAR"},
+{id:16,g:"C",d:"19/06",r:2,t:"22:00",st:"Lincoln Financial",hi:"br",h:"Brasil",he:"Brazil",hc:"BRA",ai:"ht",a:"Haiti",ae:"Haiti",ac:"HAI"},
+{id:17,g:"C",d:"24/06",r:3,t:"19:00",st:"Hard Rock",hi:"gb-sct",h:"Escócia",he:"Scotland",hc:"SCO",ai:"br",a:"Brasil",ae:"Brazil",ac:"BRA"},
+{id:18,g:"C",d:"24/06",r:3,t:"19:00",st:"Mercedes-Benz",hi:"ma",h:"Marrocos",he:"Morocco",hc:"MAR",ai:"ht",a:"Haiti",ae:"Haiti",ac:"HAI"},
+{id:19,g:"D",d:"12/06",r:1,t:"22:00",st:"SoFi",hi:"us",h:"Estados Unidos",he:"USA",hc:"USA",ai:"py",a:"Paraguai",ae:"Paraguay",ac:"PAR"},
+{id:20,g:"D",d:"13/06",r:1,t:"01:00",st:"BC Place",hi:"au",h:"Austrália",he:"Australia",hc:"AUS",ai:"tr",a:"Turquia",ae:"Turkey",ac:"TUR"},
+{id:21,g:"D",d:"19/06",r:2,t:"16:00",st:"Lumen Field",hi:"us",h:"Estados Unidos",he:"USA",hc:"USA",ai:"au",a:"Austrália",ae:"Australia",ac:"AUS"},
+{id:22,g:"D",d:"19/06",r:2,t:"01:00",st:"Levi's",hi:"tr",h:"Turquia",he:"Turkey",hc:"TUR",ai:"py",a:"Paraguai",ae:"Paraguay",ac:"PAR"},
+{id:23,g:"D",d:"25/06",r:3,t:"23:00",st:"SoFi",hi:"tr",h:"Turquia",he:"Turkey",hc:"TUR",ai:"us",a:"Estados Unidos",ae:"USA",ac:"USA"},
+{id:24,g:"D",d:"25/06",r:3,t:"23:00",st:"Levi's",hi:"py",h:"Paraguai",he:"Paraguay",hc:"PAR",ai:"au",a:"Austrália",ae:"Australia",ac:"AUS"},
+{id:25,g:"E",d:"14/06",r:1,t:"14:00",st:"NRG",hi:"de",h:"Alemanha",he:"Germany",hc:"GER",ai:"cw",a:"Curaçao",ae:"Curacao",ac:"CUW"},
+{id:26,g:"E",d:"14/06",r:1,t:"20:00",st:"Lincoln Financial",hi:"ci",h:"Costa do Marfim",he:"Ivory Coast",hc:"CIV",ai:"ec",a:"Equador",ae:"Ecuador",ac:"ECU"},
+{id:27,g:"E",d:"20/06",r:2,t:"17:00",st:"BMO Field",hi:"de",h:"Alemanha",he:"Germany",hc:"GER",ai:"ci",a:"Costa do Marfim",ae:"Ivory Coast",ac:"CIV"},
+{id:28,g:"E",d:"20/06",r:2,t:"21:00",st:"Arrowhead",hi:"ec",h:"Equador",he:"Ecuador",hc:"ECU",ai:"cw",a:"Curaçao",ae:"Curacao",ac:"CUW"},
+{id:29,g:"E",d:"25/06",r:3,t:"17:00",st:"MetLife",hi:"ec",h:"Equador",he:"Ecuador",hc:"ECU",ai:"de",a:"Alemanha",ae:"Germany",ac:"GER"},
+{id:30,g:"E",d:"25/06",r:3,t:"17:00",st:"Lincoln Financial",hi:"cw",h:"Curaçao",he:"Curacao",hc:"CUW",ai:"ci",a:"Costa do Marfim",ae:"Ivory Coast",ac:"CIV"},
+{id:31,g:"F",d:"14/06",r:1,t:"17:00",st:"AT&T",hi:"nl",h:"Holanda",he:"Netherlands",hc:"NED",ai:"jp",a:"Japão",ae:"Japan",ac:"JPN"},
+{id:32,g:"F",d:"14/06",r:1,t:"23:00",st:"BBVA",hi:"se",h:"Suécia",he:"Sweden",hc:"SWE",ai:"tn",a:"Tunísia",ae:"Tunisia",ac:"TUN"},
+{id:33,g:"F",d:"20/06",r:2,t:"14:00",st:"NRG",hi:"nl",h:"Holanda",he:"Netherlands",hc:"NED",ai:"se",a:"Suécia",ae:"Sweden",ac:"SWE"},
+{id:34,g:"F",d:"20/06",r:2,t:"01:00",st:"BBVA",hi:"tn",h:"Tunísia",he:"Tunisia",hc:"TUN",ai:"jp",a:"Japão",ae:"Japan",ac:"JPN"},
+{id:35,g:"F",d:"25/06",r:3,t:"20:00",st:"AT&T",hi:"jp",h:"Japão",he:"Japan",hc:"JPN",ai:"se",a:"Suécia",ae:"Sweden",ac:"SWE"},
+{id:36,g:"F",d:"25/06",r:3,t:"20:00",st:"Arrowhead",hi:"tn",h:"Tunísia",he:"Tunisia",hc:"TUN",ai:"nl",a:"Holanda",ae:"Netherlands",ac:"NED"},
+{id:37,g:"G",d:"15/06",r:1,t:"19:00",st:"Lumen Field",hi:"be",h:"Bélgica",he:"Belgium",hc:"BEL",ai:"eg",a:"Egito",ae:"Egypt",ac:"EGY"},
+{id:38,g:"G",d:"15/06",r:1,t:"01:00",st:"SoFi",hi:"ir",h:"Irã",he:"Iran",hc:"IRN",ai:"nz",a:"Nova Zelândia",ae:"New Zealand",ac:"NZL"},
+{id:39,g:"G",d:"21/06",r:2,t:"16:00",st:"SoFi",hi:"be",h:"Bélgica",he:"Belgium",hc:"BEL",ai:"ir",a:"Irã",ae:"Iran",ac:"IRN"},
+{id:40,g:"G",d:"21/06",r:2,t:"22:00",st:"BC Place",hi:"nz",h:"Nova Zelândia",he:"New Zealand",hc:"NZL",ai:"eg",a:"Egito",ae:"Egypt",ac:"EGY"},
+{id:41,g:"G",d:"26/06",r:3,t:"00:00",st:"Lumen Field",hi:"eg",h:"Egito",he:"Egypt",hc:"EGY",ai:"ir",a:"Irã",ae:"Iran",ac:"IRN"},
+{id:42,g:"G",d:"26/06",r:3,t:"00:00",st:"BC Place",hi:"nz",h:"Nova Zelândia",he:"New Zealand",hc:"NZL",ai:"be",a:"Bélgica",ae:"Belgium",ac:"BEL"},
+{id:43,g:"H",d:"15/06",r:1,t:"14:00",st:"Mercedes-Benz",hi:"es",h:"Espanha",he:"Spain",hc:"ESP",ai:"cv",a:"Cabo Verde",ae:"Cape Verde",ac:"CPV"},
+{id:44,g:"H",d:"15/06",r:1,t:"19:00",st:"Hard Rock",hi:"sa",h:"Arábia Saudita",he:"Saudi Arabia",hc:"KSA",ai:"uy",a:"Uruguai",ae:"Uruguay",ac:"URU"},
+{id:45,g:"H",d:"21/06",r:2,t:"13:00",st:"Mercedes-Benz",hi:"es",h:"Espanha",he:"Spain",hc:"ESP",ai:"sa",a:"Arábia Saudita",ae:"Saudi Arabia",ac:"KSA"},
+{id:46,g:"H",d:"21/06",r:2,t:"19:00",st:"Hard Rock",hi:"uy",h:"Uruguai",he:"Uruguay",hc:"URU",ai:"cv",a:"Cabo Verde",ae:"Cape Verde",ac:"CPV"},
+{id:47,g:"H",d:"26/06",r:3,t:"21:00",st:"NRG",hi:"cv",h:"Cabo Verde",he:"Cape Verde",hc:"CPV",ai:"sa",a:"Arábia Saudita",ae:"Saudi Arabia",ac:"KSA"},
+{id:48,g:"H",d:"26/06",r:3,t:"21:00",st:"Akron",hi:"uy",h:"Uruguai",he:"Uruguay",hc:"URU",ai:"es",a:"Espanha",ae:"Spain",ac:"ESP"},
+{id:49,g:"I",d:"16/06",r:1,t:"16:00",st:"MetLife",hi:"fr",h:"França",he:"France",hc:"FRA",ai:"sn",a:"Senegal",ae:"Senegal",ac:"SEN"},
+{id:50,g:"I",d:"16/06",r:1,t:"19:00",st:"Gillette",hi:"iq",h:"Iraque",he:"Iraq",hc:"IRQ",ai:"no",a:"Noruega",ae:"Norway",ac:"NOR"},
+{id:51,g:"I",d:"22/06",r:2,t:"18:00",st:"Lincoln Financial",hi:"fr",h:"França",he:"France",hc:"FRA",ai:"iq",a:"Iraque",ae:"Iraq",ac:"IRQ"},
+{id:52,g:"I",d:"22/06",r:2,t:"21:00",st:"MetLife",hi:"no",h:"Noruega",he:"Norway",hc:"NOR",ai:"sn",a:"Senegal",ae:"Senegal",ac:"SEN"},
+{id:53,g:"I",d:"26/06",r:3,t:"16:00",st:"Gillette",hi:"no",h:"Noruega",he:"Norway",hc:"NOR",ai:"fr",a:"França",ae:"France",ac:"FRA"},
+{id:54,g:"I",d:"26/06",r:3,t:"16:00",st:"BMO Field",hi:"sn",h:"Senegal",he:"Senegal",hc:"SEN",ai:"iq",a:"Iraque",ae:"Iraq",ac:"IRQ"},
+{id:55,g:"J",d:"16/06",r:1,t:"22:00",st:"Arrowhead",hi:"ar",h:"Argentina",he:"Argentina",hc:"ARG",ai:"dz",a:"Argélia",ae:"Algeria",ac:"ALG"},
+{id:56,g:"J",d:"16/06",r:1,t:"01:00",st:"Levi's",hi:"at",h:"Áustria",he:"Austria",hc:"AUT",ai:"jo",a:"Jordânia",ae:"Jordan",ac:"JOR"},
+{id:57,g:"J",d:"22/06",r:2,t:"14:00",st:"AT&T",hi:"ar",h:"Argentina",he:"Argentina",hc:"ARG",ai:"at",a:"Áustria",ae:"Austria",ac:"AUT"},
+{id:58,g:"J",d:"22/06",r:2,t:"00:00",st:"Levi's",hi:"jo",h:"Jordânia",he:"Jordan",hc:"JOR",ai:"dz",a:"Argélia",ae:"Algeria",ac:"ALG"},
+{id:59,g:"J",d:"27/06",r:3,t:"23:00",st:"Arrowhead",hi:"dz",h:"Argélia",he:"Algeria",hc:"ALG",ai:"at",a:"Áustria",ae:"Austria",ac:"AUT"},
+{id:60,g:"J",d:"27/06",r:3,t:"23:00",st:"AT&T",hi:"jo",h:"Jordânia",he:"Jordan",hc:"JOR",ai:"ar",a:"Argentina",ae:"Argentina",ac:"ARG"},
+{id:61,g:"K",d:"17/06",r:1,t:"14:00",st:"NRG",hi:"pt",h:"Portugal",he:"Portugal",hc:"POR",ai:"cd",a:"RD Congo",ae:"DR Congo",ac:"COD"},
+{id:62,g:"K",d:"17/06",r:1,t:"23:00",st:"Azteca",hi:"uz",h:"Uzbequistão",he:"Uzbekistan",hc:"UZB",ai:"co",a:"Colômbia",ae:"Colombia",ac:"COL"},
+{id:63,g:"K",d:"23/06",r:2,t:"14:00",st:"NRG",hi:"pt",h:"Portugal",he:"Portugal",hc:"POR",ai:"uz",a:"Uzbequistão",ae:"Uzbekistan",ac:"UZB"},
+{id:64,g:"K",d:"23/06",r:2,t:"23:00",st:"Akron",hi:"co",h:"Colômbia",he:"Colombia",hc:"COL",ai:"cd",a:"RD Congo",ae:"DR Congo",ac:"COD"},
+{id:65,g:"K",d:"27/06",r:3,t:"20:30",st:"Hard Rock",hi:"co",h:"Colômbia",he:"Colombia",hc:"COL",ai:"pt",a:"Portugal",ae:"Portugal",ac:"POR"},
+{id:66,g:"K",d:"27/06",r:3,t:"20:30",st:"Mercedes-Benz",hi:"cd",h:"RD Congo",he:"DR Congo",hc:"COD",ai:"uz",a:"Uzbequistão",ae:"Uzbekistan",ac:"UZB"},
+{id:67,g:"L",d:"17/06",r:1,t:"17:00",st:"AT&T",hi:"gb-eng",h:"Inglaterra",he:"England",hc:"ENG",ai:"hr",a:"Croácia",ae:"Croatia",ac:"CRO"},
+{id:68,g:"L",d:"17/06",r:1,t:"20:00",st:"BMO Field",hi:"gh",h:"Gana",he:"Ghana",hc:"GHA",ai:"pa",a:"Panamá",ae:"Panama",ac:"PAN"},
+{id:69,g:"L",d:"23/06",r:2,t:"17:00",st:"Gillette",hi:"gb-eng",h:"Inglaterra",he:"England",hc:"ENG",ai:"gh",a:"Gana",ae:"Ghana",ac:"GHA"},
+{id:70,g:"L",d:"23/06",r:2,t:"20:00",st:"BMO Field",hi:"pa",h:"Panamá",he:"Panama",hc:"PAN",ai:"hr",a:"Croácia",ae:"Croatia",ac:"CRO"},
+{id:71,g:"L",d:"27/06",r:3,t:"18:00",st:"MetLife",hi:"pa",h:"Panamá",he:"Panama",hc:"PAN",ai:"gb-eng",a:"Inglaterra",ae:"England",ac:"ENG"},
+{id:72,g:"L",d:"27/06",r:3,t:"18:00",st:"Lincoln Financial",hi:"hr",h:"Croácia",he:"Croatia",hc:"CRO",ai:"gh",a:"Gana",ae:"Ghana",ac:"GHA"}
 
 ];
 
@@ -625,6 +682,7 @@ const groupColor = g => `hsl(${groupHue(g)}, 55%, 52%)`;
 
 const RESULTS_KEY = "resultados_oficiais";
 const PARTICIPANTS_KEY = "participantes_bolao";
+const MANUAL_KEY = "resultados_manuais"; // ids de jogos editados manualmente (não sobrescritos pela auto-atualização)
 
 // Resultados já conhecidos/realizados, para não precisar digitar de novo na primeira vez.
 // Use o ID do jogo (veja MATCHES acima) -> {h: gols casa, a: gols visitante}.
@@ -634,9 +692,67 @@ const SEED_RESULTS = {
   2: {h:"2", a:"1"},  // Coreia do Sul 2 x 1 Tchéquia
 };
 
-// Senha para editar a aba "Resultados" (resultados oficiais).
+// Senha para editar manualmente a aba "Resultados" (resultados oficiais).
 // Troque por uma senha sua antes de publicar.
 const RESULTS_PASSWORD = "gabardo2026";
+
+// ---------- AUTO-ATUALIZAÇÃO DE RESULTADOS (TheSportsDB - gratuito, sem chave) ----------
+const SPORTSDB_KEY = "123";
+const SPORTSDB_LEAGUE_ID = "4429"; // FIFA World Cup
+const AUTO_REFRESH_MS = 5 * 60 * 1000; // a cada 5 minutos
+
+function normTeam(s){
+  return (s||"").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/republic|island|kingdom|the|fc|national/g,"")
+    .replace(/[^a-z]/g,"");
+}
+
+function dateToISO(dStr){
+  const [dd, mm] = dStr.split("/");
+  return `2026-${mm}-${dd}`;
+}
+
+async function fetchDayEvents(dateISO){
+  try{
+    const url = `https://www.thesportsdb.com/api/v1/json/${SPORTSDB_KEY}/eventsday.php?d=${dateISO}&l=${SPORTSDB_LEAGUE_ID}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.events || [];
+  }catch(e){ return []; }
+}
+
+// Busca resultados na API e atualiza os jogos que ainda não foram editados manualmente.
+async function autoUpdateResults(){
+  let changed = false;
+  const dates = [...new Set(MATCHES.map(m=>m.d))];
+  for(const d of dates){
+    const events = await fetchDayEvents(dateToISO(d));
+    if(!events.length) continue;
+    for(const ev of events){
+      if(ev.intHomeScore===null || ev.intAwayScore===null || ev.intHomeScore===undefined) continue;
+      const evHome = normTeam(ev.strHomeTeam);
+      const evAway = normTeam(ev.strAwayTeam);
+      const match = MATCHES.find(m =>
+        m.d===d && normTeam(m.he)===evHome && normTeam(m.ae)===evAway
+      );
+      if(!match) continue;
+      if(state.manualResults.includes(match.id)) continue;
+      const h = String(ev.intHomeScore), a = String(ev.intAwayScore);
+      const cur = state.results[match.id];
+      if(!cur || cur.h!==h || cur.a!==a){
+        state.results[match.id] = {h, a};
+        changed = true;
+      }
+    }
+  }
+  if(changed){
+    await storeSet(RESULTS_KEY, state.results);
+  }
+  state.lastAutoUpdate = new Date();
+  const typing = document.activeElement && document.activeElement.tagName === "INPUT";
+  if(!typing) render();
+}
 
 let state = {
   tab: "palpites",
@@ -645,6 +761,8 @@ let state = {
   participants: [],
   active: null,
   results: {},
+  manualResults: [],
+  lastAutoUpdate: null,
   picks: {}, // name -> {id:{h,a}}
   resultsUnlocked: false,
 };
@@ -763,22 +881,23 @@ const saveParticipants = async () => {
 
 // ---------- RENDER HELPERS ----------
 function matchScoreInputs(match, mode){
-  let hVal="", aVal="";
+  let hVal="", aVal="", confirmed=false;
   if(mode==="palpites" && state.active){
     const p = state.picks[state.active]?.[match.id];
-    if(p){ hVal = p.h ?? ""; aVal = p.a ?? ""; }
-  } else if(mode==="resultados"){
+    if(p){ hVal = p.h ?? ""; aVal = p.a ?? ""; confirmed = !!p.locked; }
+  } else if(mode==="resultados" || mode==="resultados-view"){
     const r = state.results[match.id];
     if(r){ hVal = r.h ?? ""; aVal = r.a ?? ""; }
   }
-  const locked = mode==="palpites" && matchStarted(match);
-  const dis = locked ? "disabled" : "";
+  const lockedByKickoff = mode==="palpites" && matchStarted(match);
+  const lockedByConfirm = mode==="palpites" && confirmed && !state.resultsUnlocked;
+  const dis = (lockedByKickoff || lockedByConfirm || mode==="resultados-view") ? "disabled" : "";
   return `
     <div class="score">
-      <input type="number" min="0" max="20" inputmode="numeric" value="${hVal}" ${dis}
+      <input type="number" min="0" max="20" inputmode="numeric" placeholder="${mode==='resultados-view' ? '-' : ''}" value="${hVal}" ${dis}
         data-match="${match.id}" data-side="h" data-mode="${mode}">
       <span class="x">×</span>
-      <input type="number" min="0" max="20" inputmode="numeric" value="${aVal}" ${dis}
+      <input type="number" min="0" max="20" inputmode="numeric" placeholder="${mode==='resultados-view' ? '-' : ''}" value="${aVal}" ${dis}
         data-match="${match.id}" data-side="a" data-mode="${mode}">
     </div>`;
 }
@@ -803,6 +922,40 @@ function realRow(match){
   return `<div class="real-row"><span>Resultado oficial</span><b>${r.h} × ${r.a}</b></div>`;
 }
 
+// Conteúdo interno do .match-foot (resultado oficial, pontuação e confirmação de palpite)
+function footContent(match){
+  const r = state.results[match.id];
+  const hasResult = r && r.h!=="" && r.h!==undefined && r.a!=="" && r.a!==undefined;
+  const resultLine = hasResult
+    ? `<span class="saiba result-line">
+         ${flagSVG(match.hi,"mini-flag")}
+         ${r.h} × ${r.a}
+         ${flagSVG(match.ai,"mini-flag")}
+       </span>`
+    : `<span class="saiba" style="color:#B7C2BD">Aguardando resultado</span>`;
+
+  const pick = state.picks[state.active]?.[match.id];
+  const started = matchStarted(match);
+  const hasPick = pick && pick.h!=="" && pick.h!==undefined && pick.a!=="" && pick.a!==undefined;
+  const confirmed = pick && pick.locked;
+
+  let confirmRow = "";
+  if(!started){
+    if(confirmed){
+      confirmRow = `<div class="confirm-row">
+          <span class="confirmed-badge">✅ Palpite confirmado</span>
+          ${state.resultsUnlocked ? `<button class="unlock-pick-btn" data-unlock-pick="${match.id}">🔓 Desbloquear</button>` : ""}
+        </div>`;
+    } else if(hasPick){
+      confirmRow = `<div class="confirm-row">
+          <button class="confirm-btn" data-confirm-pick="${match.id}">✅ Confirmar palpite</button>
+        </div>`;
+    }
+  }
+
+  return `${resultLine}${pointsBadge(match)}${confirmRow}`;
+}
+
 function matchRow(match, mode){
   const accent = groupColor(match.g);
   const rel = dateLabel(match.d);
@@ -810,25 +963,16 @@ function matchRow(match, mode){
   if(rel) dateBits.push(rel);
   dateBits.push(match.t);
 
-  let foot = "";
-  if(mode==="palpites"){
-    const r = state.results[match.id];
-    const hasResult = r && r.h!=="" && r.h!==undefined && r.a!=="" && r.a!==undefined;
-    const resultLine = hasResult
-      ? `<span class="saiba result-line">
-           ${flagSVG(match.hi,"mini-flag")}
-           ${r.h} × ${r.a}
-           ${flagSVG(match.ai,"mini-flag")}
-         </span>`
-      : `<span class="saiba" style="color:#B7C2BD">Aguardando resultado</span>`;
-    foot = `<div class="match-foot">
-        ${resultLine}
-        ${pointsBadge(match)}
-      </div>`;
-  }
+  const foot = mode==="palpites"
+    ? `<div class="match-foot">${footContent(match)}</div>`
+    : "";
 
-  const lockedTag = (mode==="palpites" && matchStarted(match))
-    ? `<span class="lock-tag">🔒 Iniciado</span>` : "";
+  const pick = mode==="palpites" ? state.picks[state.active]?.[match.id] : null;
+  let lockedTag = "";
+  if(mode==="palpites"){
+    if(matchStarted(match)) lockedTag = `<span class="lock-tag">🔒 Iniciado</span>`;
+    else if(pick && pick.locked) lockedTag = `<span class="lock-tag confirmed">✅ Confirmado</span>`;
+  }
 
   return `
     <div class="match-row" style="--accent:${accent}">
@@ -875,9 +1019,22 @@ function renderParticipants(){
       <input type="text" id="newParticipant" placeholder="Nome do participante" maxlength="24">
       <button id="addParticipantBtn">Adicionar</button>
     </div>`;
+  html += state.resultsUnlocked
+    ? `<button class="pill" id="adminToggle" style="margin-left:auto">🔓 Admin ativo</button>`
+    : `<button class="pill" id="adminToggle" style="margin-left:auto">🔐 Admin</button>`;
   row.innerHTML = html;
 
-  row.querySelectorAll(".pill").forEach(btn=>{
+  document.getElementById("adminToggle").addEventListener("click", ()=>{
+    if(state.resultsUnlocked){
+      state.resultsUnlocked = false;
+      try{ sessionStorage.removeItem("bolao_results_unlocked"); }catch(e){}
+      render();
+    } else {
+      showPasswordModal();
+    }
+  });
+
+  row.querySelectorAll(".pill[data-p]").forEach(btn=>{
     btn.addEventListener("click", async (e)=>{
       if(e.target.dataset.remove) return;
       state.active = btn.dataset.p;
@@ -940,23 +1097,46 @@ async function renderContent(){
     await ensurePicks(state.active);
     content.innerHTML = `<div class="match-list">${filteredMatches().map(m=>matchRow(m,"palpites")).join("")}</div>`;
     bindScoreInputs("palpites");
+    content.querySelectorAll(".match-foot").forEach(bindFootActions);
   }
 
   else if(state.tab==="resultados"){
-    if(!state.resultsUnlocked){
-      content.innerHTML = `<div class="empty">
-          🔒 Esta área é protegida por senha para evitar que qualquer pessoa altere os resultados oficiais.
-          <br><br>
-          <button id="unlockBtn" class="add-participant"
-            style="font-family:'Oswald',sans-serif;font-weight:600;background:var(--turf-dim);color:var(--cream);border:1px solid var(--turf);border-radius:999px;padding:10px 20px;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;">
-            Digitar senha
-          </button>
-        </div>`;
-      document.getElementById("unlockBtn").addEventListener("click", showPasswordModal);
-      return;
+    const mode = state.resultsUnlocked ? "resultados" : "resultados-view";
+    const lastUpd = state.lastAutoUpdate
+      ? state.lastAutoUpdate.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})
+      : "—";
+
+    const bar = `
+      <div class="results-bar">
+        <div class="results-bar-info">
+          <span class="dot ${state.lastAutoUpdate ? 'result' : 'miss'}" style="display:inline-block"></span>
+          Última atualização automática: <b>${lastUpd}</b>
+        </div>
+        <div class="results-bar-actions">
+          <button id="refreshBtn" class="bar-btn">🔄 Atualizar agora</button>
+          ${state.resultsUnlocked
+            ? `<button id="lockBtn" class="bar-btn">🔒 Bloquear edição</button>`
+            : `<button id="unlockBtn2" class="bar-btn primary">✏️ Editar manualmente</button>`}
+        </div>
+      </div>`;
+
+    content.innerHTML = bar + `<div class="match-list">${filteredMatches().map(m=>matchRow(m,mode)).join("")}</div>`;
+
+    document.getElementById("refreshBtn").addEventListener("click", async (e)=>{
+      e.target.textContent = "Atualizando...";
+      await autoUpdateResults();
+      render();
+    });
+    if(state.resultsUnlocked){
+      document.getElementById("lockBtn").addEventListener("click", ()=>{
+        state.resultsUnlocked = false;
+        try{ sessionStorage.removeItem("bolao_results_unlocked"); }catch(e){}
+        render();
+      });
+      bindScoreInputs("resultados");
+    } else {
+      document.getElementById("unlockBtn2").addEventListener("click", showPasswordModal);
     }
-    content.innerHTML = `<div class="match-list">${filteredMatches().map(m=>matchRow(m,"resultados")).join("")}</div>`;
-    bindScoreInputs("resultados");
   }
 
   else if(state.tab==="classificacao"){
@@ -1019,6 +1199,10 @@ function bindScoreInputs(mode){
         obj[side] = v;
         state.results[id] = obj;
         saveResults();
+        if(!state.manualResults.includes(id)){
+          state.manualResults.push(id);
+          storeSet(MANUAL_KEY, state.manualResults);
+        }
         refreshAllBadgesFor(id);
       }
     });
@@ -1032,16 +1216,8 @@ function refreshCardFeedback(matchId){
     if(card.innerHTML.includes(`>${match.h}<`) && card.innerHTML.includes(`>${match.a}<`)){
       const foot = card.querySelector(".match-foot");
       if(foot){
-        const r = state.results[match.id];
-        const hasResult = r && r.h!=="" && r.h!==undefined && r.a!=="" && r.a!==undefined;
-        const resultLine = hasResult
-          ? `<span class="saiba result-line">
-               ${flagSVG(match.hi,"mini-flag")}
-               ${r.h} × ${r.a}
-               ${flagSVG(match.ai,"mini-flag")}
-             </span>`
-          : `<span class="saiba" style="color:#B7C2BD">Aguardando resultado</span>`;
-        foot.innerHTML = `${resultLine}${pointsBadge(match)}`;
+        foot.innerHTML = footContent(match);
+        bindFootActions(foot);
       }
     }
   });
@@ -1098,6 +1274,48 @@ document.getElementById("pwInput").addEventListener("keydown", (e)=>{
   if(e.key === "Enter") tryUnlock();
 });
 
+// ---------- AÇÕES DO RODAPÉ DO CARD (confirmar / desbloquear palpite) ----------
+function bindFootActions(footEl){
+  const confirmBtn = footEl.querySelector("[data-confirm-pick]");
+  if(confirmBtn){
+    confirmBtn.addEventListener("click", ()=> showConfirmModal(+confirmBtn.dataset.confirmPick));
+  }
+  const unlockBtn = footEl.querySelector("[data-unlock-pick]");
+  if(unlockBtn){
+    unlockBtn.addEventListener("click", async ()=>{
+      const id = +unlockBtn.dataset.unlockPick;
+      state.picks[state.active][id].locked = false;
+      await storeSet(slug(state.active), state.picks[state.active]);
+      render();
+    });
+  }
+}
+
+// ---------- MODAL DE CONFIRMAÇÃO DE PALPITE ----------
+let pendingConfirmMatchId = null;
+function showConfirmModal(matchId){
+  const match = MATCHES.find(m=>m.id===matchId);
+  const pick = state.picks[state.active][matchId];
+  pendingConfirmMatchId = matchId;
+  document.getElementById("confirmText").innerHTML =
+    `${match.h} <b>${pick.h} × ${pick.a}</b> ${match.a}` +
+    `<br><br>Depois de confirmado, somente o administrador (com senha) poderá alterar este palpite. Confirmar?`;
+  document.getElementById("confirmModal").style.display = "flex";
+}
+function hideConfirmModal(){
+  document.getElementById("confirmModal").style.display = "none";
+  pendingConfirmMatchId = null;
+}
+document.getElementById("confirmCancel").addEventListener("click", hideConfirmModal);
+document.getElementById("confirmYes").addEventListener("click", async ()=>{
+  if(pendingConfirmMatchId==null) return;
+  const id = pendingConfirmMatchId;
+  state.picks[state.active][id].locked = true;
+  await storeSet(slug(state.active), state.picks[state.active]);
+  hideConfirmModal();
+  render();
+});
+
 async function init(){
   try{ if(sessionStorage.getItem("bolao_results_unlocked")==="1") state.resultsUnlocked = true; }catch(e){}
   const note = document.getElementById("shareNote");
@@ -1119,8 +1337,14 @@ async function init(){
   }
   if(seeded) await storeSet(RESULTS_KEY, state.results);
 
+  state.manualResults = await storeGet(MANUAL_KEY) || [];
+
   if(state.participants.length) state.active = state.participants[0];
   render();
+
+  // auto-atualização de resultados (best-effort; falhas são silenciosas)
+  autoUpdateResults();
+  setInterval(autoUpdateResults, AUTO_REFRESH_MS);
 }
 init();
 </script>
