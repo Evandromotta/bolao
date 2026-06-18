@@ -1112,16 +1112,16 @@ async function renderContent(){
            Atualização automática desativada — edição manual
          </div>`;
 
+
     const bar = `
-      <div class="results-bar">
-        ${autoInfo}
+      <div class="results-bar" style="justify-content:center">
         <div class="results-bar-actions">
           ${AUTO_UPDATE_ENABLED ? `<button id="refreshBtn" class="bar-btn">🔄 Atualizar agora</button>` : ""}
           ${state.resultsUnlocked
             ? `<button id="lockBtn" class="bar-btn">🔒 Bloquear edição</button>`
-            : `<button id="unlockBtn2" class="bar-btn primary">✏️ Editar manualmente</button>`}
-        </div>
-      </div>`;
+            : `<button id="unlockBtn2" class="bar-btn primary">Atualizar Placar</button>`}
+      </div>
+  </div>`;
 
     content.innerHTML = bar + `<div class="match-list">${filteredMatches().map(m=>matchRow(m,mode)).join("")}</div>`;
 
