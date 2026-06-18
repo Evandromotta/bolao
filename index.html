@@ -1098,20 +1098,6 @@ async function renderContent(){
 
   else if(state.tab==="resultados"){
     const mode = state.resultsUnlocked ? "resultados" : "resultados-view";
-    const lastUpd = state.lastAutoUpdate
-      ? state.lastAutoUpdate.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})
-      : "—";
-
-    const autoInfo = AUTO_UPDATE_ENABLED
-      ? `<div class="results-bar-info">
-           <span class="dot ${state.lastAutoUpdate ? 'result' : 'miss'}" style="display:inline-block"></span>
-           Última atualização automática: <b>${lastUpd}</b>
-         </div>`
-      : `<div class="results-bar-info">
-           <span class="dot miss" style="display:inline-block"></span>
-           Atualização automática desativada — edição manual
-         </div>`;
-
 
     const bar = `
       <div class="results-bar" style="justify-content:center">
@@ -1120,8 +1106,8 @@ async function renderContent(){
           ${state.resultsUnlocked
             ? `<button id="lockBtn" class="bar-btn">🔒 Bloquear edição</button>`
             : `<button id="unlockBtn2" class="bar-btn primary">Atualizar Placar</button>`}
-      </div>
-  </div>`;
+        </div>
+      </div>`;
 
     content.innerHTML = bar + `<div class="match-list">${filteredMatches().map(m=>matchRow(m,mode)).join("")}</div>`;
 
