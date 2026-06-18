@@ -706,6 +706,11 @@ const SPORTSDB_KEY = "123";
 const SPORTSDB_LEAGUE_ID = "4429"; // FIFA World Cup
 const AUTO_REFRESH_MS = 5 * 60 * 1000; // a cada 5 minutos
 
+// Liga/desliga a busca automática de resultados na API externa (TheSportsDB).
+// Desativado por padrão: a API às vezes sobrescreveu resultados editados manualmente.
+// Para reativar, troque para true.
+const AUTO_UPDATE_ENABLED = false;
+
 function normTeam(s){
   return (s||"").toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
@@ -729,6 +734,7 @@ async function fetchDayEvents(dateISO){
 
 // Busca resultados na API e atualiza os jogos que ainda não foram editados manualmente.
 async function autoUpdateResults(){
+  if(!AUTO_UPDATE_ENABLED) return;
   let changed = false;
   const dates = [...new Set(MATCHES.map(m=>m.d))];
   for(const d of dates){
@@ -1096,14 +1102,21 @@ async function renderContent(){
       ? state.lastAutoUpdate.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})
       : "—";
 
+    const autoInfo = AUTO_UPDATE_ENABLED
+      ? `<div class="results-bar-info">
+           <span class="dot ${state.lastAutoUpdate ? 'result' : 'miss'}" style="display:inline-block"></span>
+           Última atualização automática: <b>${lastUpd}</b>
+         </div>`
+      : `<div class="results-bar-info">
+           <span class="dot miss" style="display:inline-block"></span>
+           Atualização automática desativada — edição manual
+         </div>`;
+
     const bar = `
       <div class="results-bar">
-        <div class="results-bar-info">
-          <span class="dot ${state.lastAutoUpdate ? 'result' : 'miss'}" style="display:inline-block"></span>
-          Última atualização automática: <b>${lastUpd}</b>
-        </div>
+        ${autoInfo}
         <div class="results-bar-actions">
-          <button id="refreshBtn" class="bar-btn">🔄 Atualizar agora</button>
+          ${AUTO_UPDATE_ENABLED ? `<button id="refreshBtn" class="bar-btn">🔄 Atualizar agora</button>` : ""}
           ${state.resultsUnlocked
             ? `<button id="lockBtn" class="bar-btn">🔒 Bloquear edição</button>`
             : `<button id="unlockBtn2" class="bar-btn primary">✏️ Editar manualmente</button>`}
@@ -1112,11 +1125,13 @@ async function renderContent(){
 
     content.innerHTML = bar + `<div class="match-list">${filteredMatches().map(m=>matchRow(m,mode)).join("")}</div>`;
 
-    document.getElementById("refreshBtn").addEventListener("click", async (e)=>{
-      e.target.textContent = "Atualizando...";
-      await autoUpdateResults();
-      render();
-    });
+    if(AUTO_UPDATE_ENABLED){
+      document.getElementById("refreshBtn").addEventListener("click", async (e)=>{
+        e.target.textContent = "Atualizando...";
+        await autoUpdateResults();
+        render();
+      });
+    }
     if(state.resultsUnlocked){
       document.getElementById("lockBtn").addEventListener("click", ()=>{
         state.resultsUnlocked = false;
@@ -1355,8 +1370,10 @@ async function init(){
   render();
 
   // auto-atualização de resultados (best-effort; falhas são silenciosas)
-  autoUpdateResults();
-  setInterval(autoUpdateResults, AUTO_REFRESH_MS);
+  if(AUTO_UPDATE_ENABLED){
+    autoUpdateResults();
+    setInterval(autoUpdateResults, AUTO_REFRESH_MS);
+  }
 }
 init();
 </script>
