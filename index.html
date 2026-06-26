@@ -1477,19 +1477,34 @@ async function renderContent(){
         </div>
       </div>`;
 
-    content.innerHTML = bar + `<div class="match-list">${filteredMatches().map(m=>matchRow(m,mode)).join("")}</div>`;
-
-    if(state.resultsUnlocked){
-      document.getElementById("lockBtn").addEventListener("click", ()=>{
-        state.resultsUnlocked = false;
-        try{ sessionStorage.removeItem("bolao_results_unlocked"); }catch(e){}
-        render();
-      });
-      if(state.subfase==="f1") bindScoreInputs("resultados");
+    if(state.subfase==="f1"){
+      // ── 1ª FASE: grupos ──
+      content.innerHTML = bar + `<div class="match-list">${filteredMatches().map(m=>matchRow(m,mode)).join("")}</div>`;
+      if(state.resultsUnlocked){
+        document.getElementById("lockBtn").addEventListener("click", ()=>{
+          state.resultsUnlocked = false;
+          try{ sessionStorage.removeItem("bolao_results_unlocked"); }catch(e){}
+          render();
+        });
+        bindScoreInputs("resultados");
+      } else {
+        document.getElementById("unlockBtn2").addEventListener("click", showPasswordModal);
+      }
     } else {
-      document.getElementById("unlockBtn2").addEventListener("click", showPasswordModal);
+      // ── 2ª FASE: eliminatórias ──
+      const koHtml = await buildKOSection(state.resultsUnlocked ? "admin" : "view");
+      content.innerHTML = bar + koHtml;
+      if(state.resultsUnlocked){
+        document.getElementById("lockBtn").addEventListener("click", ()=>{
+          state.resultsUnlocked = false;
+          try{ sessionStorage.removeItem("bolao_results_unlocked"); }catch(e){}
+          render();
+        });
+      } else {
+        document.getElementById("unlockBtn2").addEventListener("click", showPasswordModal);
+      }
+      bindKOSection(content, state.resultsUnlocked ? "admin" : "view");
     }
-    if(state.subfase==="f2") bindKOSection(content, state.resultsUnlocked?"admin":"view");
   }
 
   else if(state.tab==="classificacao"){
