@@ -647,6 +647,34 @@ body{margin:0;}
 .ko-bar{max-width:560px;margin:0 auto 4px;background:#EEF2F0;display:flex;justify-content:center;padding:12px 16px 4px;}
 .ko-note{font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:#8C9A95;text-align:center;max-width:560px;margin:0 auto;padding:0 0 10px;}
 
+
+/* ---------- SUB-NAV 1ª / 2ª FASE ---------- */
+.subfase-nav{
+  display:flex;
+  background:var(--surface);
+  border-bottom:2px solid var(--line);
+}
+.subfase-btn{
+  flex:1;
+  text-align:center;
+  padding:10px 8px;
+  font-family:'Oswald',sans-serif;
+  font-weight:700;
+  font-size:.8rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  background:none;border:none;cursor:pointer;
+  border-bottom:3px solid transparent;
+  margin-bottom:-2px;
+  transition:.15s;
+}
+.subfase-btn.active{
+  color:var(--turf);
+  border-bottom-color:var(--turf);
+}
+.subfase-btn:hover{color:var(--cream);}
+
 @media (max-width:480px){
   .match-row .side .flag{font-size:1.2rem;}
   .match-row .score input{width:34px;height:34px;font-size:1.05rem;}
@@ -672,11 +700,11 @@ body{margin:0;}
   <div class="tabbar">
     <button class="tab active" data-tab="palpites">Palpites</button>
     <button class="tab" data-tab="resultados">Resultados</button>
-    <button class="tab" data-tab="fase2">2ª Fase</button>
     <button class="tab" data-tab="classificacao">Class. 1ª</button>
     <button class="tab" data-tab="classificacao2">Class. 2ª</button>
   </div>
 
+  <div id="subfaseNav"></div>
   <div id="participantRow" class="participant-row"></div>
   <div id="filterRow" class="filters"></div>
   <div id="roundNav"></div>
@@ -977,6 +1005,7 @@ let state = {
   lastAutoUpdate: null,
   picks: {},
   resultsUnlocked: false,
+  subfase: "f1",   // "f1" = 1ª fase (grupos), "f2" = 2ª fase (KO)
   koPhase: "R32",
   koTeams: {},
   koResults: {},
@@ -1314,9 +1343,31 @@ function filteredMatches(){
 }
 
 // ---------- VIEWS ----------
+
+function renderSubfaseNav(){
+  const el = document.getElementById("subfaseNav");
+  // só aparece nas abas Palpites e Resultados
+  if(state.tab !== "palpites" && state.tab !== "resultados"){
+    el.innerHTML = "";
+    return;
+  }
+  el.innerHTML = `
+    <div class="subfase-nav">
+      <button class="subfase-btn ${state.subfase==="f1"?"active":""}" data-subfase="f1">1ª Fase — Grupos</button>
+      <button class="subfase-btn ${state.subfase==="f2"?"active":""}" data-subfase="f2">2ª Fase — Eliminatórias</button>
+    </div>`;
+  el.querySelectorAll(".subfase-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      state.subfase = btn.dataset.subfase;
+      render();
+    });
+  });
+}
+
 function renderFilters(){
   const row = document.getElementById("filterRow");
   if(state.tab==="classificacao"||state.tab==="classificacao2"){ row.innerHTML=""; return; }
+  if(state.subfase==="f2"){ row.innerHTML=""; return; }
   const groups = ["Todos", ...GROUPS];
   row.innerHTML = groups.map(g =>
     `<button class="pill ${g===state.group?'active':''}" data-group="${g}">${g==="Todos"?"Todos":"Grupo "+g}</button>`
@@ -1376,7 +1427,7 @@ function renderParticipants(){
 
 function renderRoundNav(){
   const el = document.getElementById("roundNav");
-  if(state.tab==="classificacao"||state.tab==="classificacao2"){ el.innerHTML=""; return; }
+  if(state.tab==="classificacao"||state.tab==="classificacao2"||state.subfase==="f2"){ el.innerHTML=""; return; }
   el.innerHTML = `
     <div class="round-nav">
       <button class="rn-arrow" id="rnPrev">‹</button>
@@ -1399,12 +1450,19 @@ async function renderContent(){
       content.innerHTML = `<div class="empty">Adicione seu nome acima para começar a registrar seus palpites ⚽</div>`;
       return;
     }
-    await ensurePicks(state.active);
-    await ensureKOPicks(state.active);
-    content.innerHTML = await buildTabContent("palpites");
-    bindScoreInputs("palpites");
-    content.querySelectorAll(".match-foot").forEach(bindFootActions);
-    bindKOSection(content,"palpites");
+    if(state.subfase==="f1"){
+      // ── 1ª FASE: grupos ──
+      await ensurePicks(state.active);
+      content.innerHTML = `<div class="match-list">${filteredMatches().map(m=>matchRow(m,"palpites")).join("")}</div>`;
+      bindScoreInputs("palpites");
+      content.querySelectorAll(".match-foot").forEach(bindFootActions);
+    } else {
+      // ── 2ª FASE: eliminatórias ──
+      await ensureKOPicks(state.active);
+      const koHtml = await buildKOSection("palpites");
+      content.innerHTML = koHtml;
+      bindKOSection(content,"palpites");
+    }
   }
 
   else if(state.tab==="resultados"){
@@ -1427,11 +1485,11 @@ async function renderContent(){
         try{ sessionStorage.removeItem("bolao_results_unlocked"); }catch(e){}
         render();
       });
-      bindScoreInputs("resultados");
+      if(state.subfase==="f1") bindScoreInputs("resultados");
     } else {
       document.getElementById("unlockBtn2").addEventListener("click", showPasswordModal);
     }
-    bindKOSection(content, state.resultsUnlocked?"admin":"view");
+    if(state.subfase==="f2") bindKOSection(content, state.resultsUnlocked?"admin":"view");
   }
 
   else if(state.tab==="classificacao"){
@@ -1560,11 +1618,13 @@ document.querySelectorAll(".tab").forEach(btn=>{
     state.tab = btn.dataset.tab;
     state.group = "Todos";
     state.round = 1;
+    state.subfase = "f1";
     render();
   });
 });
 
 async function render(){
+  renderSubfaseNav();
   renderParticipants();
   renderFilters();
   renderRoundNav();
