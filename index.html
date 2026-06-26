@@ -537,6 +537,116 @@ body{margin:0;}
 .f2-bar{max-width:560px;margin:0 auto 4px;background:#EEF2F0;display:flex;justify-content:center;padding:14px 16px 4px;}
 .f2-admin-note{font-family:"Oswald",sans-serif;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:#8C9A95;text-align:center;max-width:560px;margin:0 auto;padding:0 0 12px;}
 
+
+/* ===== KNOCKOUT PHASE ===== */
+.ko-phase-nav{
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+  padding:10px 16px 4px;background:var(--surface);border-bottom:1px solid var(--line);
+}
+.ko-phase-nav::-webkit-scrollbar{display:none;}
+.ko-pill{
+  flex:0 0 auto;font-family:'Oswald',sans-serif;font-weight:600;
+  font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:7px 14px;border-radius:999px;border:1px solid var(--line);
+  background:var(--surface-2);color:var(--muted);cursor:pointer;white-space:nowrap;transition:.12s;
+}
+.ko-pill.active{background:var(--turf);color:#06160E;border-color:var(--turf);}
+.ko-pill:hover:not(.active){border-color:var(--turf);color:var(--cream);}
+
+.ko-list{background:#EEF2F0;padding:14px 16px 32px;display:flex;flex-direction:column;gap:12px;}
+.ko-card{
+  max-width:560px;width:100%;margin:0 auto;
+  background:#FFF;border:1px solid #E1E6E3;border-radius:12px;
+  padding:13px 16px 13px 20px;box-shadow:0 1px 3px rgba(0,0,0,.04);
+  position:relative;
+}
+.ko-card::before{
+  content:"";position:absolute;top:0;left:0;bottom:0;width:4px;
+  border-radius:12px 0 0 12px;background:var(--turf);
+}
+.ko-card-head{
+  text-align:center;font-size:.72rem;color:#8C9A95;font-weight:600;
+  margin-bottom:10px;letter-spacing:.02em;
+}
+.ko-card-head strong{color:#33433C;}
+.ko-card-body{display:flex;align-items:center;gap:8px;}
+.ko-team{
+  flex:1;min-width:0;display:flex;align-items:center;gap:7px;
+  font-family:'Oswald',sans-serif;font-weight:600;font-size:.88rem;color:#33433C;
+}
+.ko-team.home{justify-content:flex-end;text-align:right;}
+.ko-team.away{justify-content:flex-start;text-align:left;}
+.ko-team .tn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ko-team .koflag{
+  flex:0 0 26px;width:26px;height:19px;border-radius:3px;overflow:hidden;
+  box-shadow:0 0 0 1px #E1E6E3;background:#F1F5F2;display:inline-block;line-height:0;
+}
+.ko-team .koflag svg{display:block;width:100%;height:100%;}
+.ko-team.tbd .tn{color:#B7C2BD;font-style:italic;}
+.ko-score{display:flex;align-items:center;gap:5px;flex:0 0 auto;}
+.ko-score input{
+  width:38px;height:38px;text-align:center;
+  font-family:'Oswald',sans-serif;font-weight:700;font-size:1.15rem;
+  color:#1F7A4A;background:#F1F5F2;border:1px solid #DCE4E0;border-radius:8px;
+  outline:none;-moz-appearance:textfield;
+}
+.ko-score input::-webkit-outer-spin-button,.ko-score input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.ko-score input:focus{border-color:var(--turf);box-shadow:0 0 0 3px rgba(52,199,123,.15);}
+.ko-score input:disabled{background:#E9EDEA;color:#A8B5AF;border-color:#E1E6E3;cursor:not-allowed;}
+.ko-score .kox{font-family:'Oswald',sans-serif;font-weight:700;color:#B7C2BD;}
+.ko-foot{
+  margin-top:9px;padding-top:9px;border-top:1px solid #EEF2F0;
+  display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;
+}
+/* seletor de quem avança */
+.adv-picker{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:center;}
+.adv-lbl{font-family:'Oswald',sans-serif;font-weight:600;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:#8C9A95;}
+.adv-btn{
+  font-family:'Oswald',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;
+  border-radius:999px;padding:5px 12px;cursor:pointer;border:1px solid #DCE4E0;
+  background:#F1F5F2;color:#33433C;display:flex;align-items:center;gap:5px;transition:.1s;
+}
+.adv-btn.on{background:var(--turf-dim);border-color:var(--turf);color:#fff;}
+.adv-btn:disabled{opacity:.45;cursor:not-allowed;}
+.adv-btn .af{display:inline-block;width:17px;height:12px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.1);line-height:0;}
+.adv-btn .af svg{display:block;width:100%;height:100%;}
+.adv-confirmed{font-family:'Oswald',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:rgba(52,199,123,.14);color:var(--turf-dim);border:1px solid var(--turf);}
+.official-adv{font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:#33433C;display:flex;align-items:center;gap:5px;justify-content:center;}
+.official-adv .af{display:inline-block;width:17px;height:12px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px #E1E6E3;line-height:0;}
+.official-adv .af svg{display:block;width:100%;height:100%;}
+
+/* seletor de país (autocomplete) */
+.country-search-wrap{position:relative;display:inline-block;}
+.country-search-wrap input{
+  width:160px;font-size:.73rem;padding:4px 8px;
+  border:1px solid #DCE4E0;border-radius:6px;outline:none;
+  font-family:'Inter',sans-serif;
+}
+.country-search-wrap input:focus{border-color:var(--turf);}
+.country-dropdown{
+  position:absolute;top:calc(100% + 2px);left:0;z-index:200;
+  background:#fff;border:1px solid #DCE4E0;border-radius:8px;
+  box-shadow:0 4px 14px rgba(0,0,0,.1);
+  max-height:180px;overflow-y:auto;min-width:200px;
+}
+.country-option{
+  display:flex;align-items:center;gap:7px;padding:6px 10px;cursor:pointer;
+  font-family:'Oswald',sans-serif;font-size:.82rem;font-weight:600;color:#33433C;
+}
+.country-option:hover{background:#EEF2F0;}
+.country-option .cof{display:inline-block;width:22px;height:16px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px #E1E6E3;line-height:0;flex:0 0 auto;}
+.country-option .cof svg{display:block;width:100%;height:100%;}
+/* admin team inputs inside card */
+.ko-team-inputs{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;justify-content:center;}
+.ko-team-inputs input{
+  font-size:.72rem;padding:4px 8px;border:1px solid #DCE4E0;border-radius:6px;outline:none;
+  font-family:'Inter',sans-serif;
+}
+.ko-team-inputs input:focus{border-color:var(--turf);}
+/* barra admin knockout */
+.ko-bar{max-width:560px;margin:0 auto 4px;background:#EEF2F0;display:flex;justify-content:center;padding:12px 16px 4px;}
+.ko-note{font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:#8C9A95;text-align:center;max-width:560px;margin:0 auto;padding:0 0 10px;}
+
 @media (max-width:480px){
   .match-row .side .flag{font-size:1.2rem;}
   .match-row .score input{width:34px;height:34px;font-size:1.05rem;}
@@ -735,6 +845,28 @@ const groupColor = g => `hsl(${groupHue(g)}, 55%, 52%)`;
 const RESULTS_KEY = "resultados_oficiais";
 const PARTICIPANTS_KEY = "participantes_bolao";
 const MANUAL_KEY = "resultados_manuais";
+const KO_PHASES = [{"phase": "R32", "label": "16 Avos", "games": [{"id": 201, "date": "28/06", "time": "16:00", "city": "Los Angeles", "label": "J73", "desc": "2º Gr.A × 2º Gr.B"}, {"id": 202, "date": "29/06", "time": "14:00", "city": "Houston", "label": "J76", "desc": "1º Gr.C × 2º Gr.F"}, {"id": 203, "date": "29/06", "time": "17:30", "city": "Boston", "label": "J74", "desc": "1º Gr.E × 3º melhor"}, {"id": 204, "date": "29/06", "time": "22:00", "city": "Monterrey", "label": "J75", "desc": "1º Gr.F × 2º Gr.C"}, {"id": 205, "date": "30/06", "time": "14:00", "city": "Dallas", "label": "J78", "desc": "2º Gr.E × 2º Gr.I"}, {"id": 206, "date": "30/06", "time": "18:00", "city": "Nova York", "label": "J77", "desc": "1º Gr.I × 3º melhor"}, {"id": 207, "date": "30/06", "time": "22:00", "city": "Cidade do México", "label": "J79", "desc": "1º Gr.A × 3º melhor"}, {"id": 208, "date": "01/07", "time": "13:00", "city": "Atlanta", "label": "J80", "desc": "1º Gr.L × 3º melhor"}, {"id": 209, "date": "01/07", "time": "17:00", "city": "Seattle", "label": "J82", "desc": "1º Gr.G × 3º melhor"}, {"id": 210, "date": "01/07", "time": "21:00", "city": "São Francisco", "label": "J81", "desc": "1º Gr.D × 3º melhor"}, {"id": 211, "date": "02/07", "time": "16:00", "city": "Los Angeles", "label": "J84", "desc": "1º Gr.H × 2º Gr.J"}, {"id": 212, "date": "02/07", "time": "20:00", "city": "Toronto", "label": "J83", "desc": "2º Gr.K × 2º Gr.L"}, {"id": 213, "date": "03/07", "time": "00:00", "city": "Vancouver", "label": "J85", "desc": "1º Gr.B × 3º melhor"}, {"id": 214, "date": "03/07", "time": "15:00", "city": "Dallas", "label": "J88", "desc": "2º Gr.D × 2º Gr.G"}, {"id": 215, "date": "03/07", "time": "19:00", "city": "Miami", "label": "J86", "desc": "1º Gr.J × 2º Gr.H"}, {"id": 216, "date": "03/07", "time": "22:30", "city": "Kansas City", "label": "J87", "desc": "1º Gr.K × 3º melhor"}]}, {"phase": "R16", "label": "Oitavas", "games": [{"id": 217, "date": "04/07", "time": "14:00", "city": "Houston", "label": "OF1", "desc": "Venc. J73 × Venc. J75"}, {"id": 218, "date": "04/07", "time": "18:00", "city": "Filadélfia", "label": "OF2", "desc": "Venc. J74 × Venc. J77"}, {"id": 219, "date": "05/07", "time": "17:00", "city": "Nova York", "label": "OF3", "desc": "Venc. J76 × Venc. J78"}, {"id": 220, "date": "05/07", "time": "21:00", "city": "Cidade do México", "label": "OF4", "desc": "Venc. J79 × Venc. J80"}, {"id": 221, "date": "06/07", "time": "16:00", "city": "Dallas", "label": "OF5", "desc": "Venc. J83 × Venc. J84"}, {"id": 222, "date": "06/07", "time": "21:00", "city": "Seattle", "label": "OF6", "desc": "Venc. J81 × Venc. J82"}, {"id": 223, "date": "07/07", "time": "13:00", "city": "Atlanta", "label": "OF7", "desc": "Venc. J86 × Venc. J88"}, {"id": 224, "date": "07/07", "time": "17:00", "city": "Vancouver", "label": "OF8", "desc": "Venc. J85 × Venc. J87"}]}, {"phase": "QF", "label": "Quartas", "games": [{"id": 225, "date": "09/07", "time": "17:00", "city": "Boston", "label": "QF1", "desc": "Venc. OF1 × Venc. OF2"}, {"id": 226, "date": "10/07", "time": "16:00", "city": "Los Angeles", "label": "QF2", "desc": "Venc. OF3 × Venc. OF4"}, {"id": 227, "date": "11/07", "time": "18:00", "city": "Miami", "label": "QF3", "desc": "Venc. OF5 × Venc. OF6"}, {"id": 228, "date": "11/07", "time": "22:00", "city": "Kansas City", "label": "QF4", "desc": "Venc. OF7 × Venc. OF8"}]}, {"phase": "SF", "label": "Semifinal", "games": [{"id": 229, "date": "14/07", "time": "16:00", "city": "Dallas", "label": "SF1", "desc": "Venc. QF1 × Venc. QF2"}, {"id": 230, "date": "15/07", "time": "16:00", "city": "Atlanta", "label": "SF2", "desc": "Venc. QF3 × Venc. QF4"}]}, {"phase": "FIN", "label": "Final", "games": [{"id": 231, "date": "18/07", "time": "18:00", "city": "Miami", "label": "3º Lugar", "desc": "Perd. SF1 × Perd. SF2"}, {"id": 232, "date": "19/07", "time": "16:00", "city": "Nova York / NJ", "label": "FINAL", "desc": "Venc. SF1 × Venc. SF2"}]}];
+
+const KO_TEAMS_KEY = "ko_teams";
+const KO_RES_KEY   = "ko_resultados";
+const KO_ADV_KEY   = "ko_avanco";
+
+// lista de todos os países participantes (para autocomplete de seleção de times)
+const ALL_COUNTRIES = [
+  {c:"mx",n:"México"},{c:"za",n:"África do Sul"},{c:"kr",n:"Coreia do Sul"},{c:"cz",n:"Tchéquia"},
+  {c:"ca",n:"Canadá"},{c:"ba",n:"Bósnia e Herzegovina"},{c:"qa",n:"Catar"},{c:"ch",n:"Suíça"},
+  {c:"br",n:"Brasil"},{c:"ma",n:"Marrocos"},{c:"ht",n:"Haiti"},{c:"gb-sct",n:"Escócia"},
+  {c:"us",n:"Estados Unidos"},{c:"py",n:"Paraguai"},{c:"au",n:"Austrália"},{c:"tr",n:"Turquia"},
+  {c:"de",n:"Alemanha"},{c:"cw",n:"Curaçao"},{c:"ci",n:"Costa do Marfim"},{c:"ec",n:"Equador"},
+  {c:"nl",n:"Holanda"},{c:"jp",n:"Japão"},{c:"se",n:"Suécia"},{c:"tn",n:"Tunísia"},
+  {c:"be",n:"Bélgica"},{c:"eg",n:"Egito"},{c:"ir",n:"Irã"},{c:"nz",n:"Nova Zelândia"},
+  {c:"es",n:"Espanha"},{c:"cv",n:"Cabo Verde"},{c:"sa",n:"Arábia Saudita"},{c:"uy",n:"Uruguai"},
+  {c:"fr",n:"França"},{c:"sn",n:"Senegal"},{c:"iq",n:"Iraque"},{c:"no",n:"Noruega"},
+  {c:"ar",n:"Argentina"},{c:"dz",n:"Argélia"},{c:"at",n:"Áustria"},{c:"jo",n:"Jordânia"},
+  {c:"pt",n:"Portugal"},{c:"cd",n:"RD Congo"},{c:"uz",n:"Uzbequistão"},{c:"co",n:"Colômbia"},
+  {c:"gb-eng",n:"Inglaterra"},{c:"hr",n:"Croácia"},{c:"gh",n:"Gana"},{c:"pa",n:"Panamá"},
+];
+
 /* =====================================================================
  * 2ª FASE — 16 AVOS DE FINAL
  * ===================================================================== */
@@ -845,10 +977,11 @@ let state = {
   lastAutoUpdate: null,
   picks: {},
   resultsUnlocked: false,
-  ko16teams: {},
-  ko16results: {},
-  ko16advance: {},
-  ko16picks: {},
+  koPhase: "R32",
+  koTeams: {},
+  koResults: {},
+  koAdvance: {},
+  koPicks: {},
 };
 
 const ORDINAL = {1:"1ª", 2:"2ª", 3:"3ª"};
@@ -984,6 +1117,77 @@ const saveKO16results = debounce(async ()=>{
   await storeSet(KO16_RES, state.ko16results);
   await storeSet(KO16_ADV, state.ko16advance);
 }, 400);
+
+/* =====================================================================
+ * PONTUAÇÃO MATA-MATA
+ * 3pts placar exato | 1pt resultado | +1pt bônus quem avança (só empate)
+ * ===================================================================== */
+function calcPointsKO(pick, realScore, realAdv){
+  if(!pick||!realScore) return null;
+  if(pick.h===""||pick.h===undefined) return null;
+  if(pick.a===""||pick.a===undefined) return null;
+  if(realScore.h===""||realScore.h===undefined) return null;
+  if(realScore.a===""||realScore.a===undefined) return null;
+  const ph=+pick.h,pa=+pick.a,rh=+realScore.h,ra=+realScore.a;
+  if([ph,pa,rh,ra].some(isNaN)) return null;
+  let pts=0;
+  if(ph===rh&&pa===ra) pts+=3;
+  else if(Math.sign(ph-pa)===Math.sign(rh-ra)) pts+=1;
+  if(rh===ra&&realAdv&&pick.advance&&pick.advance===realAdv) pts+=1;
+  return pts;
+}
+async function ensureKOPicks(name){
+  if(!state.koPicks[name]) state.koPicks[name] = await storeGet("ko_picks_"+slug(name)) || {};
+  return state.koPicks[name];
+}
+async function saveKOPicks(name){ await storeSet("ko_picks_"+slug(name), state.koPicks[name]); }
+const saveKOResults = debounce(async()=>{
+  await storeSet(KO_RES_KEY,state.koResults);
+  await storeSet(KO_ADV_KEY,state.koAdvance);
+  await storeSet(KO_TEAMS_KEY,state.koTeams);
+},400);
+
+// Autocomplete de países
+function buildCountryPicker(gameId, side, currentCode, currentName, disabled){
+  const uid = `cp_${gameId}_${side}`;
+  return `<div class="country-search-wrap" id="wrap_${uid}">
+    <input type="text" id="${uid}" value="${currentName||""}" placeholder="${side==="h"?"Mandante":"Visitante"}"
+      ${disabled?"disabled":""} autocomplete="off"
+      data-ko-ccode="${gameId}" data-ko-cside="${side}"
+      style="width:145px">
+    <div class="country-dropdown" id="drop_${uid}" style="display:none"></div>
+  </div>`;
+}
+function bindCountryPickers(container){
+  container.querySelectorAll("input[data-ko-ccode]").forEach(inp=>{
+    if(inp.disabled) return;
+    const uid = inp.id;
+    const drop = document.getElementById("drop_"+uid);
+    inp.addEventListener("input",()=>{
+      const q = inp.value.toLowerCase();
+      const matches = ALL_COUNTRIES.filter(c=>c.n.toLowerCase().includes(q)||c.c.toLowerCase().includes(q));
+      if(!q||!matches.length){drop.style.display="none";return;}
+      drop.innerHTML = matches.slice(0,8).map(c=>`
+        <div class="country-option" data-cc="${c.c}" data-cn="${c.n}">
+          <span class="cof">${FLAG_SVG[c.c]||""}</span>${c.n}
+        </div>`).join("");
+      drop.style.display="block";
+      drop.querySelectorAll(".country-option").forEach(opt=>{
+        opt.addEventListener("click",async()=>{
+          const id=+inp.dataset.koCcode, side=inp.dataset.koCside;
+          const cc=opt.dataset.cc, cn=opt.dataset.cn;
+          inp.value=cn; drop.style.display="none";
+          state.koTeams[id]=state.koTeams[id]||{};
+          if(side==="h"){state.koTeams[id].h=cc;state.koTeams[id].hn=cn;}
+          else {state.koTeams[id].a=cc;state.koTeams[id].an=cn;}
+          await saveKOResults();
+          render();
+        });
+      });
+    });
+    inp.addEventListener("blur",()=>setTimeout(()=>{drop.style.display="none";},150));
+  });
+}
 const saveResults = debounce(async () => {
   await storeSet(RESULTS_KEY, state.results);
 }, 400);
@@ -1112,7 +1316,7 @@ function filteredMatches(){
 // ---------- VIEWS ----------
 function renderFilters(){
   const row = document.getElementById("filterRow");
-  if(state.tab==="classificacao"||state.tab==="fase2"||state.tab==="classificacao2"){ row.innerHTML=""; return; }
+  if(state.tab==="classificacao"||state.tab==="classificacao2"){ row.innerHTML=""; return; }
   const groups = ["Todos", ...GROUPS];
   row.innerHTML = groups.map(g =>
     `<button class="pill ${g===state.group?'active':''}" data-group="${g}">${g==="Todos"?"Todos":"Grupo "+g}</button>`
@@ -1124,7 +1328,7 @@ function renderFilters(){
 
 function renderParticipants(){
   const row = document.getElementById("participantRow");
-  if(state.tab!=="palpites"&&state.tab!=="fase2"){ row.innerHTML=""; return; }
+  if(state.tab!=="palpites"){ row.innerHTML=""; return; }
   let html = state.participants.map(p =>
     `<button class="pill ${p===state.active?'active':''}" data-p="${p}">${p}</button>`
   ).join("");
@@ -1172,7 +1376,7 @@ function renderParticipants(){
 
 function renderRoundNav(){
   const el = document.getElementById("roundNav");
-  if(state.tab==="classificacao"||state.tab==="fase2"||state.tab==="classificacao2"){ el.innerHTML=""; return; }
+  if(state.tab==="classificacao"||state.tab==="classificacao2"){ el.innerHTML=""; return; }
   el.innerHTML = `
     <div class="round-nav">
       <button class="rn-arrow" id="rnPrev">‹</button>
@@ -1196,9 +1400,11 @@ async function renderContent(){
       return;
     }
     await ensurePicks(state.active);
-    content.innerHTML = `<div class="match-list">${filteredMatches().map(m=>matchRow(m,"palpites")).join("")}</div>`;
+    await ensureKOPicks(state.active);
+    content.innerHTML = await buildTabContent("palpites");
     bindScoreInputs("palpites");
     content.querySelectorAll(".match-foot").forEach(bindFootActions);
+    bindKOSection(content,"palpites");
   }
 
   else if(state.tab==="resultados"){
@@ -1225,6 +1431,7 @@ async function renderContent(){
     } else {
       document.getElementById("unlockBtn2").addEventListener("click", showPasswordModal);
     }
+    bindKOSection(content, state.resultsUnlocked?"admin":"view");
   }
 
   else if(state.tab==="classificacao"){
@@ -1280,12 +1487,11 @@ async function renderContent(){
         </div>
       </div>`).join("")}</div>`;
   }
-  else if(state.tab==="fase2"){
-    await renderFase2(content);
-  }
   else if(state.tab==="classificacao2"){
-    await renderClassificacao2(content);
+    await renderKOClassif(content);
   }
+  // PALPITES 2ª FASE — embutido na aba Palpites via sub-phase nav
+  // RESULTADOS 2ª FASE — embutido na aba Resultados via sub-phase nav
 }
 
 function bindScoreInputs(mode){
@@ -1741,6 +1947,262 @@ async function renderClassificacao2(content){
           <div>${r.hit} <span>Res.</span></div>
           <div>${r.bonus} <span>Bônus</span></div>
           <div>${r.played}/${KO16_SLOTS.length} <span>Jogos</span></div>
+          <div class="pts">${r.total}<span>pts</span></div>
+        </div>
+      </div>`).join("")}</div>`;
+}
+
+
+/* =====================================================================
+ * FUNÇÕES DE RENDER — MATA-MATA
+ * ===================================================================== */
+
+// Constrói o card de um jogo de mata-mata
+function buildKOCard(game, viewMode){
+  // viewMode: "palpites" | "admin" | "view"
+  const teams = state.koTeams[game.id] || {};
+  const hasTeams = !!(teams.hn && teams.an);
+  const realScore = state.koResults[game.id] || {};
+  const realAdv = state.koAdvance[game.id];
+  const hasResult = realScore.h !== undefined && realScore.h !== "";
+  const pick = state.active ? (state.koPicks[state.active]?.[game.id] || {}) : {};
+
+  const hFlag = teams.h ? `<span class="koflag">${FLAG_SVG[teams.h]||""}</span>` : `<span class="koflag"></span>`;
+  const aFlag = teams.a ? `<span class="koflag">${FLAG_SVG[teams.a]||""}</span>` : `<span class="koflag"></span>`;
+  const hName = teams.hn || "A definir";
+  const aName = teams.an || "A definir";
+  const hTbd = !teams.hn ? "tbd" : "";
+  const aTbd = !teams.an ? "tbd" : "";
+
+  // score inputs
+  let hV="",aV="";
+  if(viewMode==="admin"){hV=realScore.h??"";aV=realScore.a??"";}
+  else{hV=pick.h??"";aV=pick.a??"";}
+  const canInput = viewMode==="admin" ? true : (hasTeams && !pick.locked && !hasResult);
+  const dis = canInput ? "" : "disabled";
+  const kmode = viewMode==="admin" ? "admin" : "pick";
+
+  const scoreHtml = `<div class="ko-score">
+    <input type="number" min="0" max="20" inputmode="numeric" value="${hV}" ${dis}
+      data-ko="${game.id}" data-side="h" data-kmode="${kmode}">
+    <span class="kox">×</span>
+    <input type="number" min="0" max="20" inputmode="numeric" value="${aV}" ${dis}
+      data-ko="${game.id}" data-side="a" data-kmode="${kmode}">
+  </div>`;
+
+  // admin: quem avançou + picker de países
+  let adminFoot="";
+  if(viewMode==="admin"){
+    const selH=realAdv==="h"?"on":"", selA=realAdv==="a"?"on":"";
+    const advHtml = hasTeams ? `<div class="adv-picker">
+      <span class="adv-lbl">Quem avançou:</span>
+      <button class="adv-btn ${selH}" data-ko-adv="${game.id}" data-adv="h">
+        ${teams.h?`<span class="af">${FLAG_SVG[teams.h]||""}</span>`:""} ${hName}
+      </button>
+      <button class="adv-btn ${selA}" data-ko-adv="${game.id}" data-adv="a">
+        ${teams.a?`<span class="af">${FLAG_SVG[teams.a]||""}</span>`:""} ${aName}
+      </button>
+    </div>` : "";
+    const pickersH = buildCountryPicker(game.id,"h",teams.h,teams.hn,false);
+    const pickersA = buildCountryPicker(game.id,"a",teams.a,teams.an,false);
+    adminFoot = `${advHtml}<div class="ko-team-inputs">${pickersH}${pickersA}</div>`;
+  }
+
+  // palpite: quem avança (só antes do resultado + se não confirmado)
+  let pickAdvFoot="";
+  if(viewMode==="palpites" && hasTeams && !pick.locked && !hasResult){
+    const selH=pick.advance==="h"?"on":"", selA=pick.advance==="a"?"on":"";
+    pickAdvFoot=`<div class="adv-picker">
+      <span class="adv-lbl">Se empatar, avança:</span>
+      <button class="adv-btn ${selH}" data-ko-pick-adv="${game.id}" data-adv="h">
+        ${teams.h?`<span class="af">${FLAG_SVG[teams.h]||""}</span>`:""} ${hName}
+      </button>
+      <button class="adv-btn ${selA}" data-ko-pick-adv="${game.id}" data-adv="a">
+        ${teams.a?`<span class="af">${FLAG_SVG[teams.a]||""}</span>`:""} ${aName}
+      </button>
+    </div>`;
+  } else if(viewMode==="palpites" && pick.advance && !hasResult){
+    const advName=pick.advance==="h"?hName:aName;
+    pickAdvFoot=`<span class="adv-confirmed">✅ Aposta: ${advName} avança</span>`;
+  }
+
+  // resultado oficial / quem avançou (view)
+  let officialFoot="";
+  if(viewMode!=="admin" && hasResult){
+    officialFoot=`<span class="adv-lbl" style="color:#33433C">Resultado: ${realScore.h} × ${realScore.a}</span>`;
+    if(realAdv){
+      const advName=realAdv==="h"?hName:aName, advCode=realAdv==="h"?teams.h:teams.a;
+      officialFoot+=` <span class="official-adv">Avançou: ${advCode?`<span class="af">${FLAG_SVG[advCode]||""}</span>`:""} ${advName}</span>`;
+    }
+  }
+
+  // badge pontuação
+  let ptsBadge="";
+  if(viewMode==="palpites" && state.active){
+    const rs = hasResult ? realScore : null;
+    const pts = calcPointsKO(pick, rs, realAdv);
+    if(pts===null && !hasResult) ptsBadge=`<span class="badge pending">Aguardando</span>`;
+    else if(pts===null) ptsBadge=`<span class="badge pending">Sem palpite</span>`;
+    else if(pts>=3) ptsBadge=`<span class="badge exact">+${pts} pts</span>`;
+    else if(pts>=1) ptsBadge=`<span class="badge result">+${pts} pt</span>`;
+    else ptsBadge=`<span class="badge miss">0 pts</span>`;
+  }
+
+  const foot = adminFoot || pickAdvFoot || officialFoot || ptsBadge
+    ? `<div class="ko-foot">${adminFoot}${pickAdvFoot}${officialFoot}${ptsBadge}</div>` : "";
+
+  return `<div class="ko-card">
+    <div class="ko-card-head"><strong>${game.label}</strong> · ${game.desc} · ${game.date} ${game.time} · ${game.city}</div>
+    <div class="ko-card-body">
+      <div class="ko-team home ${hTbd}">${hFlag}<span class="tn">${hName}</span></div>
+      ${scoreHtml}
+      <div class="ko-team away ${aTbd}"><span class="tn">${aName}</span>${aFlag}</div>
+    </div>
+    ${foot}
+  </div>`;
+}
+
+// Constrói a seção KO completa (com nav de fase + cards) como string HTML
+async function buildKOSection(viewMode){
+  const phases = KO_PHASES;
+  const pills = phases.map(p=>`<button class="ko-pill ${state.koPhase===p.phase?"active":""}" data-kophase="${p.phase}">${p.label}</button>`).join("");
+  const ph = phases.find(p=>p.phase===state.koPhase);
+  const cards = ph ? ph.games.map(g=>buildKOCard(g,viewMode)).join("") : "";
+  const sectionLabel = ph?ph.label:"";
+  return `
+    <div class="ko-section" id="koSection">
+      <div style="max-width:560px;margin:14px auto 0;padding:0 16px">
+        <p style="font-family:'Oswald',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px">— Eliminatórias —</p>
+      </div>
+      <div class="ko-phase-nav">${pills}</div>
+      <div class="ko-list" id="koCards">${cards}</div>
+    </div>`;
+}
+
+// Bind de todos os eventos na seção KO (score inputs, pickers, adv buttons)
+function bindKOSection(container, viewMode){
+  const sec = container.querySelector("#koSection");
+  if(!sec) return;
+
+  // navegação de fase
+  sec.querySelectorAll(".ko-pill").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      state.koPhase=btn.dataset.kophase;
+      render();
+    });
+  });
+
+  // score inputs
+  sec.querySelectorAll("input[data-ko][data-kmode]").forEach(inp=>{
+    inp.addEventListener("input", async()=>{
+      const id=+inp.dataset.ko, side=inp.dataset.side;
+      let v=inp.value;
+      if(v!==""){let n=Math.max(0,Math.min(20,parseInt(v,10)||0));v=String(n);inp.value=v;}
+      if(inp.dataset.kmode==="admin"){
+        state.koResults[id]=state.koResults[id]||{};
+        state.koResults[id][side]=v;
+        saveKOResults();
+      } else {
+        if(!state.active) return;
+        state.koPicks[state.active]=state.koPicks[state.active]||{};
+        state.koPicks[state.active][id]=state.koPicks[state.active][id]||{};
+        state.koPicks[state.active][id][side]=v;
+        await saveKOPicks(state.active);
+      }
+    });
+  });
+
+  // quem avança — admin
+  sec.querySelectorAll("[data-ko-adv]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const id=+btn.dataset.koAdv, adv=btn.dataset.adv;
+      state.koAdvance[id]=state.koAdvance[id]===adv?undefined:adv;
+      await saveKOResults();
+      render();
+    });
+  });
+
+  // quem avança — participante
+  sec.querySelectorAll("[data-ko-pick-adv]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const id=+btn.dataset.koPickAdv, adv=btn.dataset.adv;
+      if(!state.active) return;
+      state.koPicks[state.active]=state.koPicks[state.active]||{};
+      state.koPicks[state.active][id]=state.koPicks[state.active][id]||{};
+      const cur=state.koPicks[state.active][id].advance;
+      state.koPicks[state.active][id].advance=cur===adv?undefined:adv;
+      await saveKOPicks(state.active);
+      render();
+    });
+  });
+
+  // autocomplete de país (só admin)
+  if(viewMode==="admin") bindCountryPickers(sec);
+}
+
+// constrói o HTML completo de uma aba (palpites ou resultados) incluindo fase grupos + KO
+async function buildTabContent(mode){
+  const matchesHtml = `<div class="match-list">${filteredMatches().map(m=>matchRow(m,mode)).join("")}</div>`;
+  const viewMode = mode==="palpites" ? "palpites" : (state.resultsUnlocked?"admin":"view");
+  const koHtml = await buildKOSection(viewMode);
+  return matchesHtml + koHtml;
+}
+
+/* =====================================================================
+ * CLASSIFICAÇÃO 2ª FASE
+ * ===================================================================== */
+async function renderKOClassif(content){
+  if(!state.participants.length){
+    content.innerHTML=`<div class="empty">Nenhum participante cadastrado ainda.</div>`;
+    return;
+  }
+  for(const p of state.participants) await ensureKOPicks(p);
+
+  const allGames = KO_PHASES.flatMap(ph=>ph.games);
+
+  const rows = state.participants.map(name=>{
+    let total=0,exact=0,hit=0,bonus=0,played=0;
+    for(const g of allGames){
+      const pick=state.koPicks[name]?.[g.id];
+      const rs=state.koResults[g.id];
+      const hasR=rs&&rs.h!==undefined&&rs.h!=="";
+      const pts=calcPointsKO(pick,hasR?rs:null,state.koAdvance[g.id]);
+      if(pts!==null){
+        played++;total+=pts;
+        if(pts>=3)exact++;
+        else if(pts>=1)hit++;
+        const ptsNoAdv=calcPointsKO(pick,hasR?rs:null,undefined);
+        if(ptsNoAdv!==null&&pts>ptsNoAdv)bonus++;
+      }
+    }
+    return {name,total,exact,hit,bonus,played};
+  }).sort((a,b)=>{
+    if(b.total!==a.total)return b.total-a.total;
+    if(b.exact!==a.exact)return b.exact-a.exact;
+    return b.hit-a.hit;
+  });
+
+  let pos=1;
+  const positioned=rows.map((r,i)=>{
+    if(i>0){const p=rows[i-1];if(r.total!==p.total||r.exact!==p.exact||r.hit!==p.hit)pos=i+1;}
+    return {...r,pos};
+  });
+
+  content.innerHTML=`
+    <div style="padding:8px 20px 0;max-width:560px;margin:0 auto">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);margin:0 0 4px">
+        3pts placar exato · 1pt resultado · +1pt quem avança (bônus em empates)
+      </p>
+    </div>
+    <div class="board">${positioned.map(r=>`
+      <div class="board-row" data-pos="${r.pos}">
+        <div class="rank">${r.pos}</div>
+        <div class="board-name">${r.name}</div>
+        <div class="board-stats">
+          <div>${r.exact} <span>Exatos</span></div>
+          <div>${r.hit} <span>Res.</span></div>
+          <div>${r.bonus} <span>Bônus</span></div>
+          <div>${r.played}/${allGames.length} <span>Jogos</span></div>
           <div class="pts">${r.total}<span>pts</span></div>
         </div>
       </div>`).join("")}</div>`;
