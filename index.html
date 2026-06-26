@@ -495,6 +495,48 @@ body{margin:0;}
   min-height:1em;
 }
 
+
+/* ---------- 2ª FASE - CHAVEAMENTO ---------- */
+.bracket-section{background:#EEF2F0;padding:18px 16px 32px;}
+.ko-row{
+  max-width:560px;width:100%;margin:0 auto 12px;
+  background:#FFFFFF;border:1px solid #E1E6E3;border-radius:12px;
+  padding:14px 16px 14px 20px;box-shadow:0 1px 3px rgba(0,0,0,.04);
+  position:relative;
+}
+.ko-row::before{
+  content:"";position:absolute;top:0;left:0;bottom:0;width:4px;
+  border-radius:12px 0 0 12px;background:var(--turf);
+}
+.ko-head{text-align:center;font-size:.72rem;color:#8C9A95;font-weight:600;margin-bottom:10px;letter-spacing:.02em;}
+.ko-head .ko-label{color:#33433C;font-weight:700;}
+.ko-teams{display:flex;align-items:center;gap:10px;}
+.ko-side{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-family:"Oswald",sans-serif;font-weight:600;font-size:.88rem;color:#33433C;}
+.ko-side.home{justify-content:flex-end;text-align:right;}
+.ko-side.away{justify-content:flex-start;text-align:left;}
+.ko-side .tname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ko-side .flag{flex:0 0 auto;width:26px;height:19px;border-radius:3px;overflow:hidden;box-shadow:0 0 0 1px #E1E6E3;background:#F1F5F2;display:inline-block;line-height:0;}
+.ko-side .flag svg{display:block;width:100%;height:100%;}
+.ko-side.tbd .tname{color:#B7C2BD;font-style:italic;}
+.ko-score{display:flex;align-items:center;gap:6px;flex:0 0 auto;}
+.ko-score input{width:38px;height:38px;text-align:center;font-family:"Oswald",sans-serif;font-weight:700;font-size:1.2rem;color:#1F7A4A;background:#F1F5F2;border:1px solid #DCE4E0;border-radius:8px;outline:none;-moz-appearance:textfield;}
+.ko-score input::-webkit-outer-spin-button,.ko-score input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.ko-score input:focus{border-color:var(--turf);box-shadow:0 0 0 3px rgba(52,199,123,.15);}
+.ko-score input:disabled{background:#E9EDEA;color:#A8B5AF;border-color:#E1E6E3;cursor:not-allowed;}
+.ko-score .x{font-family:"Oswald",sans-serif;font-weight:700;color:#B7C2BD;}
+.ko-foot{margin-top:10px;padding-top:10px;border-top:1px solid #EEF2F0;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+.advance-picker{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;}
+.advance-label{font-family:"Oswald",sans-serif;font-weight:600;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#8C9A95;}
+.advance-btn{font-family:"Oswald",sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:6px 14px;cursor:pointer;border:1px solid #DCE4E0;background:#F1F5F2;color:#33433C;display:flex;align-items:center;gap:6px;transition:.12s;}
+.advance-btn.selected{background:var(--turf-dim);border-color:var(--turf);color:#fff;}
+.advance-btn:disabled{opacity:.5;cursor:not-allowed;}
+.advance-btn .aflag,.official-advance .aflag{display:inline-block;width:18px;height:13px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.1);line-height:0;}
+.advance-btn .aflag svg,.official-advance .aflag svg{display:block;width:100%;height:100%;}
+.advance-badge{font-family:"Oswald",sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:rgba(52,199,123,.14);color:var(--turf-dim);border:1px solid var(--turf);}
+.official-advance{font-family:"Oswald",sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#33433C;display:flex;align-items:center;gap:6px;justify-content:center;}
+.f2-bar{max-width:560px;margin:0 auto 4px;background:#EEF2F0;display:flex;justify-content:center;padding:14px 16px 4px;}
+.f2-admin-note{font-family:"Oswald",sans-serif;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:#8C9A95;text-align:center;max-width:560px;margin:0 auto;padding:0 0 12px;}
+
 @media (max-width:480px){
   .match-row .side .flag{font-size:1.2rem;}
   .match-row .score input{width:34px;height:34px;font-size:1.05rem;}
@@ -508,7 +550,7 @@ body{margin:0;}
 
 <div class="app" id="app">
   <div class="hero">
-    <p class="eyebrow">Copa do Mundo 2026 · Fase de Grupos · 12 grupos · 72 jogos</p>
+    <p class="eyebrow">Copa do Mundo 2026 · Fase de Grupos + 16 Avos · 88 jogos</p>
     <h1>BOLÃO DA <span>COPA</span></h1>
     <div class="legend">
       <div class="legend-chip"><span class="dot exact"></span> Placar exato = <b>3 pts</b></div>
@@ -520,7 +562,9 @@ body{margin:0;}
   <div class="tabbar">
     <button class="tab active" data-tab="palpites">Palpites</button>
     <button class="tab" data-tab="resultados">Resultados</button>
-    <button class="tab" data-tab="classificacao">Classificação</button>
+    <button class="tab" data-tab="fase2">2ª Fase</button>
+    <button class="tab" data-tab="classificacao">Class. 1ª</button>
+    <button class="tab" data-tab="classificacao2">Class. 2ª</button>
   </div>
 
   <div id="participantRow" class="participant-row"></div>
@@ -690,7 +734,33 @@ const groupColor = g => `hsl(${groupHue(g)}, 55%, 52%)`;
 
 const RESULTS_KEY = "resultados_oficiais";
 const PARTICIPANTS_KEY = "participantes_bolao";
-const MANUAL_KEY = "resultados_manuais"; // ids de jogos editados manualmente (não sobrescritos pela auto-atualização)
+const MANUAL_KEY = "resultados_manuais";
+/* =====================================================================
+ * 2ª FASE — 16 AVOS DE FINAL
+ * ===================================================================== */
+const KO16_KEY   = "ko16_jogos";
+const KO16_RES   = "ko16_resultados";
+const KO16_ADV   = "ko16_avanco";
+
+const KO16_SLOTS = [
+  {id:101, slot:"J01", label:"1º A vs 2º B"},
+  {id:102, slot:"J02", label:"1º C vs 2º D"},
+  {id:103, slot:"J03", label:"1º E vs 2º F"},
+  {id:104, slot:"J04", label:"1º G vs 2º H"},
+  {id:105, slot:"J05", label:"1º I vs 2º J"},
+  {id:106, slot:"J06", label:"1º K vs 2º L"},
+  {id:107, slot:"J07", label:"3º (A/B/C/D) vs 3º (E/F/G/H)"},
+  {id:108, slot:"J08", label:"3º (I/J/K/L) vs 3º restante"},
+  {id:109, slot:"J09", label:"2º A vs 1º B"},
+  {id:110, slot:"J10", label:"2º C vs 1º D"},
+  {id:111, slot:"J11", label:"2º E vs 1º F"},
+  {id:112, slot:"J12", label:"2º G vs 1º H"},
+  {id:113, slot:"J13", label:"2º I vs 1º J"},
+  {id:114, slot:"J14", label:"2º K vs 1º L"},
+  {id:115, slot:"J15", label:"Melhor 3º (1) vs Melhor 3º (2)"},
+  {id:116, slot:"J16", label:"Melhor 3º (3) vs Melhor 3º (4)"},
+];
+ // ids de jogos editados manualmente (não sobrescritos pela auto-atualização)
 
 // Resultados já conhecidos/realizados, para não precisar digitar de novo na primeira vez.
 // Use o ID do jogo (veja MATCHES acima) -> {h: gols casa, a: gols visitante}.
@@ -773,8 +843,12 @@ let state = {
   results: {},
   manualResults: [],
   lastAutoUpdate: null,
-  picks: {}, // name -> {id:{h,a}}
+  picks: {},
   resultsUnlocked: false,
+  ko16teams: {},
+  ko16results: {},
+  ko16advance: {},
+  ko16picks: {},
 };
 
 const ORDINAL = {1:"1ª", 2:"2ª", 3:"3ª"};
@@ -878,6 +952,38 @@ async function ensurePicks(name){
 }
 
 
+
+
+/* =====================================================================
+ * PONTUAÇÃO 2ª FASE
+ * 3pts placar exato | 1pt resultado | +1pt bônus quem avança (só em empate)
+ * ===================================================================== */
+function calcPointsKO(pick, realScore, realAdvance){
+  if(!pick||!realScore) return null;
+  if(pick.h===""||pick.h===undefined||pick.h===null) return null;
+  if(pick.a===""||pick.a===undefined||pick.a===null) return null;
+  if(realScore.h===""||realScore.h===undefined||realScore.h===null) return null;
+  if(realScore.a===""||realScore.a===undefined||realScore.a===null) return null;
+  const ph=+pick.h, pa=+pick.a, rh=+realScore.h, ra=+realScore.a;
+  if([ph,pa,rh,ra].some(isNaN)) return null;
+  let pts=0;
+  if(ph===rh && pa===ra) pts+=3;
+  else if(Math.sign(ph-pa)===Math.sign(rh-ra)) pts+=1;
+  if(rh===ra && realAdvance && pick.advance && pick.advance===realAdvance) pts+=1;
+  return pts;
+}
+
+async function ensureKO16picks(name){
+  if(!state.ko16picks[name]) state.ko16picks[name] = await storeGet("ko16_"+slug(name)) || {};
+  return state.ko16picks[name];
+}
+async function saveKO16picks(name){
+  await storeSet("ko16_"+slug(name), state.ko16picks[name]);
+}
+const saveKO16results = debounce(async ()=>{
+  await storeSet(KO16_RES, state.ko16results);
+  await storeSet(KO16_ADV, state.ko16advance);
+}, 400);
 const saveResults = debounce(async () => {
   await storeSet(RESULTS_KEY, state.results);
 }, 400);
@@ -1006,7 +1112,7 @@ function filteredMatches(){
 // ---------- VIEWS ----------
 function renderFilters(){
   const row = document.getElementById("filterRow");
-  if(state.tab==="classificacao"){ row.innerHTML=""; return; }
+  if(state.tab==="classificacao"||state.tab==="fase2"||state.tab==="classificacao2"){ row.innerHTML=""; return; }
   const groups = ["Todos", ...GROUPS];
   row.innerHTML = groups.map(g =>
     `<button class="pill ${g===state.group?'active':''}" data-group="${g}">${g==="Todos"?"Todos":"Grupo "+g}</button>`
@@ -1018,7 +1124,7 @@ function renderFilters(){
 
 function renderParticipants(){
   const row = document.getElementById("participantRow");
-  if(state.tab!=="palpites"){ row.innerHTML=""; return; }
+  if(state.tab!=="palpites"&&state.tab!=="fase2"){ row.innerHTML=""; return; }
   let html = state.participants.map(p =>
     `<button class="pill ${p===state.active?'active':''}" data-p="${p}">${p}</button>`
   ).join("");
@@ -1066,7 +1172,7 @@ function renderParticipants(){
 
 function renderRoundNav(){
   const el = document.getElementById("roundNav");
-  if(state.tab==="classificacao"){ el.innerHTML=""; return; }
+  if(state.tab==="classificacao"||state.tab==="fase2"||state.tab==="classificacao2"){ el.innerHTML=""; return; }
   el.innerHTML = `
     <div class="round-nav">
       <button class="rn-arrow" id="rnPrev">‹</button>
@@ -1173,6 +1279,12 @@ async function renderContent(){
           <div class="pts">${r.total}<span>pts</span></div>
         </div>
       </div>`).join("")}</div>`;
+  }
+  else if(state.tab==="fase2"){
+    await renderFase2(content);
+  }
+  else if(state.tab==="classificacao2"){
+    await renderClassificacao2(content);
   }
 }
 
@@ -1360,6 +1472,9 @@ async function init(){
   if(seeded) await storeSet(RESULTS_KEY, state.results);
 
   state.manualResults = await storeGet(MANUAL_KEY) || [];
+  state.ko16teams   = await storeGet(KO16_KEY) || {};
+  state.ko16results = await storeGet(KO16_RES) || {};
+  state.ko16advance = await storeGet(KO16_ADV) || {};
 
   if(state.participants.length) state.active = state.participants[0];
   render();
@@ -1371,6 +1486,266 @@ async function init(){
   }
 }
 init();
+
+/* =====================================================================
+ * RENDER — 2ª FASE (16 AVOS)
+ * ===================================================================== */
+async function renderFase2(content){
+  const isAdmin = state.resultsUnlocked;
+  if(!isAdmin && !state.active){
+    content.innerHTML = `<div class="empty">Selecione seu nome na aba "Palpites" para registrar palpites da 2ª fase.</div>`;
+    return;
+  }
+  if(!isAdmin && state.active) await ensureKO16picks(state.active);
+
+  const bar = `<div class="f2-bar">
+    <div class="results-bar-actions">
+      ${isAdmin
+        ? `<button id="lockBtn2" class="bar-btn">🔒 Bloquear edição</button>`
+        : `<button id="unlockBtn3" class="bar-btn primary">Atualizar Placar</button>`}
+    </div>
+  </div>
+  <p class="f2-admin-note">${isAdmin
+    ? "Modo admin: preencha os times dos confrontos, placares e quem avançou."
+    : "Preencha seus palpites para os 16 avos. Em caso de empate, escolha quem você acha que avança."}</p>`;
+
+  const cards = KO16_SLOTS.map(slot=>{
+    const teams = state.ko16teams[slot.id] || {};
+    const hasTeams = !!(teams.hn && teams.an);
+    const realScore = state.ko16results[slot.id] || {};
+    const realAdv = state.ko16advance[slot.id];
+    const pick = state.active ? (state.ko16picks[state.active]?.[slot.id] || {}) : {};
+
+    const hFlag = teams.h ? flagSVG(teams.h,"flag") : `<span class="flag"></span>`;
+    const aFlag = teams.a ? flagSVG(teams.a,"flag") : `<span class="flag"></span>`;
+    const hName = teams.hn || "A definir";
+    const aName = teams.an || "A definir";
+    const hTbd = !teams.hn ? "tbd" : "";
+    const aTbd = !teams.an ? "tbd" : "";
+
+    const hasResult = realScore.h!==undefined && realScore.h!=="";
+    const canEdit = isAdmin ? true : (hasTeams && !pick.locked && !hasResult);
+    const disScore = canEdit ? "" : "disabled";
+
+    let hValS="", aValS="";
+    if(isAdmin){ hValS=realScore.h??""; aValS=realScore.a??""; }
+    else { hValS=pick.h??""; aValS=pick.a??""; }
+
+    const scoreHtml = `<div class="ko-score">
+      <input type="number" min="0" max="20" inputmode="numeric" value="${hValS}" ${disScore}
+        data-ko="${slot.id}" data-side="h" data-kmode="${isAdmin?"admin":"pick"}">
+      <span class="x">×</span>
+      <input type="number" min="0" max="20" inputmode="numeric" value="${aValS}" ${disScore}
+        data-ko="${slot.id}" data-side="a" data-kmode="${isAdmin?"admin":"pick"}">
+    </div>`;
+
+    // Admin: quem avançou
+    let adminAdvHtml = "";
+    if(isAdmin && hasTeams){
+      const selH = realAdv==="h"?"selected":"";
+      const selA = realAdv==="a"?"selected":"";
+      adminAdvHtml = `<div class="advance-picker">
+        <span class="advance-label">Quem avançou:</span>
+        <button class="advance-btn ${selH}" data-ko-adv="${slot.id}" data-adv="h">
+          ${teams.h?`<span class="aflag">${FLAG_SVG[teams.h]||""}</span>`:""} ${hName}
+        </button>
+        <button class="advance-btn ${selA}" data-ko-adv="${slot.id}" data-adv="a">
+          ${teams.a?`<span class="aflag">${FLAG_SVG[teams.a]||""}</span>`:""} ${aName}
+        </button>
+      </div>`;
+    } else if(!isAdmin && realAdv){
+      const advName = realAdv==="h" ? hName : aName;
+      const advCode = realAdv==="h" ? teams.h : teams.a;
+      adminAdvHtml = `<div class="official-advance">
+        Avançou: ${advCode?`<span class="aflag">${FLAG_SVG[advCode]||""}</span>`:""} ${advName}
+      </div>`;
+    }
+
+    // Participante: quem avança em caso de empate
+    let pickAdvHtml = "";
+    if(!isAdmin && hasTeams && !pick.locked && !hasResult){
+      const selH = pick.advance==="h"?"selected":"";
+      const selA = pick.advance==="a"?"selected":"";
+      pickAdvHtml = `<div class="advance-picker">
+        <span class="advance-label">Se empatar, avança:</span>
+        <button class="advance-btn ${selH}" data-ko-pick-adv="${slot.id}" data-adv="h">
+          ${teams.h?`<span class="aflag">${FLAG_SVG[teams.h]||""}</span>`:""} ${hName}
+        </button>
+        <button class="advance-btn ${selA}" data-ko-pick-adv="${slot.id}" data-adv="a">
+          ${teams.a?`<span class="aflag">${FLAG_SVG[teams.a]||""}</span>`:""} ${aName}
+        </button>
+      </div>`;
+    } else if(!isAdmin && pick.advance && !hasResult){
+      const advName = pick.advance==="h" ? hName : aName;
+      pickAdvHtml = `<span class="advance-badge">Aposta: ${advName} avança</span>`;
+    }
+
+    // Badge pontuação
+    let ptsBadge = "";
+    if(!isAdmin && state.active){
+      const rs = hasResult ? realScore : null;
+      const pts = calcPointsKO(pick, rs, realAdv);
+      if(pts===null && !hasResult) ptsBadge = `<span class="badge pending">Aguardando</span>`;
+      else if(pts===null) ptsBadge = `<span class="badge pending">Sem palpite</span>`;
+      else if(pts>=3) ptsBadge = `<span class="badge exact">+${pts} pts</span>`;
+      else if(pts>=1) ptsBadge = `<span class="badge result">+${pts} pt</span>`;
+      else ptsBadge = `<span class="badge miss">0 pts</span>`;
+    }
+
+    // Admin: inputs de time
+    let adminTeamHtml = "";
+    if(isAdmin){
+      adminTeamHtml = `<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center;font-size:.7rem">
+        <input type="text" placeholder="Código casa (ex: br)" maxlength="8" value="${teams.h||""}"
+          data-ko-team="${slot.id}" data-tside="h"
+          style="width:120px;padding:5px 8px;border:1px solid #DCE4E0;border-radius:6px;text-align:center;outline:none">
+        <input type="text" placeholder="Nome casa" maxlength="30" value="${teams.hn||""}"
+          data-ko-team="${slot.id}" data-tside="hn"
+          style="width:170px;padding:5px 8px;border:1px solid #DCE4E0;border-radius:6px;outline:none">
+        <input type="text" placeholder="Código visitante" maxlength="8" value="${teams.a||""}"
+          data-ko-team="${slot.id}" data-tside="a"
+          style="width:120px;padding:5px 8px;border:1px solid #DCE4E0;border-radius:6px;text-align:center;outline:none">
+        <input type="text" placeholder="Nome visitante" maxlength="30" value="${teams.an||""}"
+          data-ko-team="${slot.id}" data-tside="an"
+          style="width:170px;padding:5px 8px;border:1px solid #DCE4E0;border-radius:6px;outline:none">
+      </div>`;
+    }
+
+    return `<div class="ko-row">
+      <div class="ko-head"><span class="ko-label">${slot.slot}</span> · ${slot.label}</div>
+      <div class="ko-teams">
+        <div class="ko-side home ${hTbd}">${hFlag}<span class="tname">${hName}</span></div>
+        ${scoreHtml}
+        <div class="ko-side away ${aTbd}"><span class="tname">${aName}</span>${aFlag}</div>
+      </div>
+      <div class="ko-foot">
+        ${!isAdmin && hasResult ? `<span class="advance-label" style="color:#33433C">Resultado: ${realScore.h} × ${realScore.a}</span>` : ""}
+        ${adminAdvHtml}${pickAdvHtml}${ptsBadge}${adminTeamHtml}
+      </div>
+    </div>`;
+  }).join("");
+
+  content.innerHTML = bar + `<div class="bracket-section">${cards}</div>`;
+
+  if(isAdmin){
+    document.getElementById("lockBtn2")?.addEventListener("click",()=>{
+      state.resultsUnlocked=false;
+      try{sessionStorage.removeItem("bolao_results_unlocked");}catch(e){}
+      render();
+    });
+    // Admin: quem avançou
+    content.querySelectorAll("[data-ko-adv]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const id=+btn.dataset.koAdv, adv=btn.dataset.adv;
+        state.ko16advance[id] = state.ko16advance[id]===adv ? undefined : adv;
+        await storeSet(KO16_ADV, state.ko16advance);
+        render();
+      });
+    });
+    // Admin: times
+    const teamDeb = debounce(async()=>{ await storeSet(KO16_KEY, state.ko16teams); render(); }, 800);
+    content.querySelectorAll("[data-ko-team]").forEach(inp=>{
+      inp.addEventListener("input", async()=>{
+        const id=+inp.dataset.koTeam, side=inp.dataset.tside;
+        state.ko16teams[id]=state.ko16teams[id]||{};
+        state.ko16teams[id][side]=inp.value.trim().toLowerCase();
+        teamDeb();
+      });
+    });
+  } else {
+    document.getElementById("unlockBtn3")?.addEventListener("click", showPasswordModal);
+    // Participante: quem avança
+    content.querySelectorAll("[data-ko-pick-adv]").forEach(btn=>{
+      btn.addEventListener("click", async()=>{
+        const id=+btn.dataset.koPickAdv, adv=btn.dataset.adv;
+        state.ko16picks[state.active]=state.ko16picks[state.active]||{};
+        state.ko16picks[state.active][id]=state.ko16picks[state.active][id]||{};
+        const cur=state.ko16picks[state.active][id].advance;
+        state.ko16picks[state.active][id].advance = cur===adv ? undefined : adv;
+        await saveKO16picks(state.active);
+        render();
+      });
+    });
+  }
+
+  // Inputs placar
+  content.querySelectorAll("input[data-ko][data-kmode]").forEach(inp=>{
+    inp.addEventListener("input", async()=>{
+      const id=+inp.dataset.ko, side=inp.dataset.side;
+      let v=inp.value;
+      if(v!==""){let n=Math.max(0,Math.min(20,parseInt(v,10)||0));v=String(n);inp.value=v;}
+      if(inp.dataset.kmode==="admin"){
+        state.ko16results[id]=state.ko16results[id]||{};
+        state.ko16results[id][side]=v;
+        saveKO16results();
+      } else {
+        state.ko16picks[state.active]=state.ko16picks[state.active]||{};
+        state.ko16picks[state.active][id]=state.ko16picks[state.active][id]||{};
+        state.ko16picks[state.active][id][side]=v;
+        await saveKO16picks(state.active);
+      }
+    });
+  });
+}
+
+/* =====================================================================
+ * RENDER — CLASSIFICAÇÃO 2ª FASE
+ * ===================================================================== */
+async function renderClassificacao2(content){
+  if(!state.participants.length){
+    content.innerHTML=`<div class="empty">Nenhum participante cadastrado ainda.</div>`;
+    return;
+  }
+  for(const p of state.participants) await ensureKO16picks(p);
+
+  const rows = state.participants.map(name=>{
+    let total=0,exact=0,hit=0,bonus=0,played=0;
+    for(const slot of KO16_SLOTS){
+      const pick=state.ko16picks[name]?.[slot.id];
+      const rs=state.ko16results[slot.id];
+      const hasR=rs&&rs.h!==undefined&&rs.h!=="";
+      const pts=calcPointsKO(pick, hasR?rs:null, state.ko16advance[slot.id]);
+      if(pts!==null){
+        played++;total+=pts;
+        if(pts>=3)exact++;
+        else if(pts>=1)hit++;
+        const ptsNoAdv=calcPointsKO(pick,hasR?rs:null,undefined);
+        if(ptsNoAdv!==null && pts>ptsNoAdv) bonus++;
+      }
+    }
+    return {name,total,exact,hit,bonus,played};
+  }).sort((a,b)=>{
+    if(b.total!==a.total) return b.total-a.total;
+    if(b.exact!==a.exact) return b.exact-a.exact;
+    return b.hit-a.hit;
+  });
+
+  let pos=1;
+  const positioned=rows.map((r,i)=>{
+    if(i>0){const p=rows[i-1];if(r.total!==p.total||r.exact!==p.exact||r.hit!==p.hit)pos=i+1;}
+    return {...r,pos};
+  });
+
+  content.innerHTML=`
+    <div style="padding:8px 20px 0;max-width:560px;margin:0 auto">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);margin:0 0 4px">
+        3pts placar exato · 1pt resultado · +1pt quem avança (só em empate)
+      </p>
+    </div>
+    <div class="board">${positioned.map(r=>`
+      <div class="board-row" data-pos="${r.pos}">
+        <div class="rank">${r.pos}</div>
+        <div class="board-name">${r.name}</div>
+        <div class="board-stats">
+          <div>${r.exact} <span>Exatos</span></div>
+          <div>${r.hit} <span>Res.</span></div>
+          <div>${r.bonus} <span>Bônus</span></div>
+          <div>${r.played}/${KO16_SLOTS.length} <span>Jogos</span></div>
+          <div class="pts">${r.total}<span>pts</span></div>
+        </div>
+      </div>`).join("")}</div>`;
+}
+
 </script>
 
 </body>
