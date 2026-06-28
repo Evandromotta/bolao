@@ -1038,6 +1038,14 @@ function matchStarted(match){
   return new Date() >= startUTC;
 }
 
+// Verifica se um jogo do mata-mata já começou (bloqueia palpites após o início)
+function koGameStarted(game){
+  const [dd, mm] = game.date.split("/").map(Number);
+  const [hh, mi] = game.time.split(":").map(Number);
+  const startUTC = new Date(Date.UTC(2026, mm - 1, dd, hh + 3, mi));
+  return new Date() >= startUTC;
+}
+
 function slug(name){
   return "palpites_" + name.toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
@@ -1699,6 +1707,7 @@ function bindFootActions(footEl){
 
 // ---------- MODAL DE CONFIRMAÇÃO DE PALPITE ----------
 let pendingConfirmMatchId = null;
+let pendingConfirmKOId = null; // confirmação pendente para jogos do mata-mata
 function showConfirmModal(matchId){
   const match = MATCHES.find(m=>m.id===matchId);
   const pick = state.picks[state.active][matchId];
@@ -1712,9 +1721,66 @@ function showConfirmModal(matchId){
     `<br>Depois de confirmado, somente o administrador (com senha) poderá alterar este palpite. Confirmar?`;
   document.getElementById("confirmModal").style.display = "flex";
 }
+
+// Confirmação de palpite para jogos do mata-mata
+function showKOConfirmModal(gameId){
+  const allGames = KO_PHASES.flatMap(ph=>ph.games);
+  const game = allGames.find(g=>g.id===gameId);
+  const pick = state.koPicks[state.active]?.[gameId] || {};
+  pendingConfirmKOId = gameId;
+
+  // Resolver os times do jogo
+  const koCard = document.querySelector(`[data-ko="${gameId}"][data-side="h"]`);
+  const hName = koCard?.closest(".ko-card")?.querySelector(".ko-team.home .tn")?.textContent || "?";
+  const aName = koCard?.closest(".ko-card")?.querySelector(".ko-team.away .tn")?.textContent || "?";
+
+  // Buscar times via resolveTeamsOf (reutilizando a lógica do card)
+  const saved = state.koTeams[gameId] || {};
+  const seed = { h: game.ih||null, hn: game.ihn||null, a: game.ia||null, an: game.ian||null };
+
+  function _winnerOf(gid){
+    const res = state.koResults[gid];
+    if(!res||res.h===undefined||res.h==="") return null;
+    if(+res.h>+res.a) return "h"; if(+res.a>+res.h) return "a";
+    return state.koAdvance[gid]||null;
+  }
+  function _resolveTeams(gid){
+    const s2=state.koTeams[gid]||{};
+    const allG=KO_PHASES.flatMap(ph=>ph.games);
+    const g2=allG.find(x=>x.id===gid);
+    if(!g2) return {};
+    return {h:s2.h??g2.ih??null,hn:s2.hn??g2.ihn??null,a:s2.a??g2.ia??null,an:s2.an??g2.ian??null};
+  }
+  function _getWinner(gid){
+    const w=_winnerOf(gid);
+    if(!w) return {c:null,n:"A definir"};
+    const t=_resolveTeams(gid);
+    return w==="h"?{c:t.h,n:t.hn||"?"}:{c:t.a,n:t.an||"?"};
+  }
+
+  let tH={c:seed.h,n:seed.hn}, tA={c:seed.a,n:seed.an};
+  if(game.r32h) tH=_getWinner(game.r32h);
+  if(game.r32a) tA=_getWinner(game.r32a);
+  if(game.r16h) tH=_getWinner(game.r16h);
+  if(game.r16a) tA=_getWinner(game.r16a);
+  if(game.qfh)  tH=_getWinner(game.qfh);
+  if(game.qfa)  tA=_getWinner(game.qfa);
+  const fH = tH.c ? `<span class="mini-flag">${FLAG_SVG[tH.c]||""}</span>` : "";
+  const fA = tA.c ? `<span class="mini-flag">${FLAG_SVG[tA.c]||""}</span>` : "";
+
+  document.getElementById("confirmText").innerHTML =
+    `<div class="confirm-score-line">
+       ${fH} ${tH.n}
+       <b>${pick.h} × ${pick.a}</b>
+       ${tA.n} ${fA}
+     </div>` +
+    `<br>Depois de confirmado, somente o administrador (com senha) poderá alterar este palpite. Confirmar?`;
+  document.getElementById("confirmModal").style.display = "flex";
+}
 function hideConfirmModal(){
   document.getElementById("confirmModal").style.display = "none";
   pendingConfirmMatchId = null;
+  pendingConfirmKOId = null;
 }
 document.getElementById("confirmCancel").addEventListener("click", async ()=>{
   if(pendingConfirmMatchId!=null){
@@ -1722,14 +1788,28 @@ document.getElementById("confirmCancel").addEventListener("click", async ()=>{
     state.picks[state.active][id] = { h:"", a:"" };
     await storeSet(slug(state.active), state.picks[state.active]);
   }
+  if(pendingConfirmKOId!=null){
+    const id = pendingConfirmKOId;
+    state.koPicks[state.active] = state.koPicks[state.active] || {};
+    state.koPicks[state.active][id] = { h:"", a:"" };
+    await saveKOPicks(state.active);
+  }
   hideConfirmModal();
   render();
 });
 document.getElementById("confirmYes").addEventListener("click", async ()=>{
-  if(pendingConfirmMatchId==null) return;
-  const id = pendingConfirmMatchId;
-  state.picks[state.active][id].locked = true;
-  await storeSet(slug(state.active), state.picks[state.active]);
+  if(pendingConfirmMatchId!=null){
+    const id = pendingConfirmMatchId;
+    state.picks[state.active][id].locked = true;
+    await storeSet(slug(state.active), state.picks[state.active]);
+  }
+  if(pendingConfirmKOId!=null){
+    const id = pendingConfirmKOId;
+    state.koPicks[state.active] = state.koPicks[state.active] || {};
+    state.koPicks[state.active][id] = state.koPicks[state.active][id] || {};
+    state.koPicks[state.active][id].locked = true;
+    await saveKOPicks(state.active);
+  }
   hideConfirmModal();
   render();
 });
@@ -2107,6 +2187,8 @@ function buildKOCard(game, viewMode){
   const realAdv = state.koAdvance[game.id];
   const hasResult = realScore.h !== undefined && realScore.h !== "";
   const pick = state.active ? (state.koPicks[state.active]?.[game.id] || {}) : {};
+  const started = koGameStarted(game);          // jogo já começou?
+  const confirmed = !!(pick && pick.locked);    // palpite confirmado?
 
   const hFlag = teams.h ? `<span class="koflag">${FLAG_SVG[teams.h]||""}</span>` : `<span class="koflag"></span>`;
   const aFlag = teams.a ? `<span class="koflag">${FLAG_SVG[teams.a]||""}</span>` : `<span class="koflag"></span>`;
@@ -2119,9 +2201,20 @@ function buildKOCard(game, viewMode){
   let hV="",aV="";
   if(viewMode==="admin"){hV=realScore.h??"";aV=realScore.a??"";}
   else{hV=pick.h??"";aV=pick.a??"";}
-  const canInput = viewMode==="admin" ? true : (hasTeams && !pick.locked && !hasResult);
+
+  // Bloqueio: admin bloqueia após início (sem resultsUnlocked); palpite bloqueia se confirmado ou se iniciou
+  const adminLocked = viewMode==="admin" && started && !state.resultsUnlocked;
+  const pickLocked  = viewMode==="palpites" && (started || confirmed);
+  const canInput = !adminLocked && !pickLocked && (viewMode==="admin" || hasTeams);
   const dis = canInput ? "" : "disabled";
   const kmode = viewMode==="admin" ? "admin" : "pick";
+
+  // Tag de status no cabeçalho do card
+  let statusTag = "";
+  if(viewMode==="palpites"){
+    if(started) statusTag = `<span class="lock-tag">🔒 Iniciado</span>`;
+    else if(confirmed) statusTag = `<span class="lock-tag confirmed">✅ Confirmado</span>`;
+  }
 
   const scoreHtml = `<div class="ko-score">
     <input type="number" min="0" max="20" inputmode="numeric" value="${hV}" ${dis}
@@ -2189,11 +2282,11 @@ function buildKOCard(game, viewMode){
     else ptsBadge=`<span class="badge miss">0 pts</span>`;
   }
 
-  const foot = adminFoot || pickAdvFoot || officialFoot || ptsBadge
-    ? `<div class="ko-foot">${adminFoot}${pickAdvFoot}${officialFoot}${ptsBadge}</div>` : "";
+  const foot = adminFoot || pickAdvFoot || officialFoot || ptsBadge || confirmRowKO
+    ? `<div class="ko-foot">${adminFoot}${pickAdvFoot}${confirmRowKO}${officialFoot}${ptsBadge}</div>` : "";
 
   return `<div class="ko-card">
-    <div class="ko-card-head"><strong>${game.label}</strong> · ${game.desc} · ${game.date} ${game.time} · ${game.city}</div>
+    <div class="ko-card-head"><strong>${game.label}</strong> · ${game.desc} · ${game.date} ${game.time} · ${game.city}${statusTag ? " " + statusTag : ""}</div>
     <div class="ko-card-body">
       <div class="ko-team home ${hTbd}">${hFlag}<span class="tn">${hName}</span></div>
       ${scoreHtml}
@@ -2244,7 +2337,18 @@ function bindKOSection(container, viewMode){
         state.koPicks[state.active]=state.koPicks[state.active]||{};
         state.koPicks[state.active][id]=state.koPicks[state.active][id]||{};
         state.koPicks[state.active][id][side]=v;
-        await saveKOPicks(state.active);
+        // não persiste antes da confirmação — apenas atualiza memória
+        // auto-abre confirmação ao preencher ambos os campos
+        const p=state.koPicks[state.active][id];
+        const allGames=KO_PHASES.flatMap(ph=>ph.games);
+        const game=allGames.find(g=>g.id===id);
+        const bothFilled=(p.h||"")!==""&&(p.a||"")!=="";
+        if(bothFilled && !p.locked && !koGameStarted(game) && pendingConfirmKOId===null){
+          inp.blur();
+          showKOConfirmModal(id);
+        } else {
+          await saveKOPicks(state.active);
+        }
       }
     });
   });
@@ -2268,6 +2372,28 @@ function bindKOSection(container, viewMode){
       state.koPicks[state.active][id]=state.koPicks[state.active][id]||{};
       const cur=state.koPicks[state.active][id].advance;
       state.koPicks[state.active][id].advance=cur===adv?undefined:adv;
+      await saveKOPicks(state.active);
+      render();
+    });
+  });
+
+  // botão confirmar palpite KO
+  sec.querySelectorAll("[data-ko-confirm]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const id=+btn.dataset.koConfirm;
+      if(!state.active) return;
+      showKOConfirmModal(id);
+    });
+  });
+
+  // botão desbloquear palpite KO (admin)
+  sec.querySelectorAll("[data-ko-unlock]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const id=+btn.dataset.koUnlock;
+      if(!state.active) return;
+      state.koPicks[state.active]=state.koPicks[state.active]||{};
+      state.koPicks[state.active][id]=state.koPicks[state.active][id]||{};
+      state.koPicks[state.active][id].locked=false;
       await saveKOPicks(state.active);
       render();
     });
