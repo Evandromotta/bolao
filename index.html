@@ -2088,7 +2088,7 @@ function buildKOCard(game, viewMode){
 
   // Para jogos sem seed (oitavas em diante), propaga automaticamente o vencedor
   let autoH = {c: seed.h,  n: seed.hn};
-  let autoA = {c: seed.a,  n: seed.ian};
+  let autoA = {c: seed.a,  n: seed.an};
   if(game.r32h) autoH = getTeamByWinner(game.r32h);
   if(game.r32a) autoA = getTeamByWinner(game.r32a);
   if(game.r16h) autoH = getTeamByWinner(game.r16h);
