@@ -2282,6 +2282,21 @@ function buildKOCard(game, viewMode){
     else ptsBadge=`<span class="badge miss">0 pts</span>`;
   }
 
+  // botão confirmar palpite / desbloquear (apenas no viewMode palpites)
+  let confirmRowKO = "";
+  if(viewMode==="palpites" && !started){
+    if(confirmed){
+      confirmRowKO = `<div class="confirm-row">
+        <span class="confirmed-badge">✅ Palpite confirmado</span>
+        ${state.resultsUnlocked ? `<button class="unlock-pick-btn" data-ko-unlock="${game.id}">🔓 Desbloquear</button>` : ""}
+      </div>`;
+    } else if((pick.h||"")!=="" && (pick.a||"")!==""){
+      confirmRowKO = `<div class="confirm-row">
+        <button class="confirm-btn" data-ko-confirm="${game.id}">✅ Confirmar palpite</button>
+      </div>`;
+    }
+  }
+
   const foot = adminFoot || pickAdvFoot || officialFoot || ptsBadge || confirmRowKO
     ? `<div class="ko-foot">${adminFoot}${pickAdvFoot}${confirmRowKO}${officialFoot}${ptsBadge}</div>` : "";
 
