@@ -1836,9 +1836,11 @@ async function init(){
   if(seeded) await storeSet(RESULTS_KEY, state.results);
 
   state.manualResults = await storeGet(MANUAL_KEY) || [];
-  state.ko16teams   = await storeGet(KO16_KEY) || {};
-  state.ko16results = await storeGet(KO16_RES) || {};
-  state.ko16advance = await storeGet(KO16_ADV) || {};
+
+  // ── sistema novo (mata-mata completo) ──
+  state.koTeams   = await storeGet(KO_TEAMS_KEY) || {};
+  state.koResults = await storeGet(KO_RES_KEY)   || {};
+  state.koAdvance = await storeGet(KO_ADV_KEY)   || {};
 
   if(state.participants.length) state.active = state.participants[0];
   render();
