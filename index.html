@@ -2345,16 +2345,28 @@ function buildKOCard(game, viewMode){
     }
   }
 
-  // resultado oficial no rodapé — só exibe se não há inputs visíveis (modo palpites sem resultado)
+  // resultado oficial no rodapé — igual ao layout da 1ª fase (bandeira + placar + bandeira)
   let officialFoot="";
   if(viewMode==="palpites" && hasResult){
-    officialFoot=`<span class="adv-lbl" style="color:#33433C">Resultado: ${realScore.h} × ${realScore.a}</span>`;
+    const fH = teams.h ? `<span class="mini-flag">${FLAG_SVG[teams.h]||""}</span>` : "";
+    const fA = teams.a ? `<span class="mini-flag">${FLAG_SVG[teams.a]||""}</span>` : "";
+    const pen = state.koPenalties[game.id] || {};
+    const isDrawReal = +realScore.h === +realScore.a;
+    const hasPen = isDrawReal && (pen.h||"")!=="" && (pen.a||"")!=="";
+
+    officialFoot = `<span class="saiba result-line">
+      ${fH} ${realScore.h} × ${realScore.a} ${fA}
+      ${hasPen ? `<span style="font-size:.65rem;color:#E07B00;font-family:'JetBrains Mono',monospace;">(pen. ${pen.h}×${pen.a})</span>` : ""}
+    </span>`;
+
     if(realAdv){
       const advName=realAdv==="h"?hName:aName, advCode=realAdv==="h"?teams.h:teams.a;
-      officialFoot+=` <span class="official-adv">Avançou: ${advCode?`<span class="af">${FLAG_SVG[advCode]||""}</span>`:""} ${advName}</span>`;
+      const fAdv = advCode ? `<span class="mini-flag">${FLAG_SVG[advCode]||""}</span>` : "";
+      officialFoot += `<span class="saiba result-line" style="margin-top:2px">
+        ${fAdv} <span style="font-size:.68rem">${advName} avançou</span>
+      </span>`;
     }
   } else if(viewMode==="view" && realAdv){
-    // no modo view o placar já está nos inputs — só mostra quem avançou
     const advName=realAdv==="h"?hName:aName, advCode=realAdv==="h"?teams.h:teams.a;
     officialFoot=`<span class="official-adv">Avançou: ${advCode?`<span class="af">${FLAG_SVG[advCode]||""}</span>`:""} ${advName}</span>`;
   }
