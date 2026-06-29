@@ -2197,10 +2197,10 @@ function buildKOCard(game, viewMode){
   const hTbd = !teams.hn ? "tbd" : "";
   const aTbd = !teams.an ? "tbd" : "";
 
-  // score inputs
+  // score inputs — admin e view mostram resultado oficial; palpites mostram o palpite do participante
   let hV="",aV="";
-  if(viewMode==="admin"){hV=realScore.h??"";aV=realScore.a??"";}
-  else{hV=pick.h??"";aV=pick.a??"";}
+  if(viewMode==="palpites"){hV=pick.h??"";aV=pick.a??"";}
+  else{hV=realScore.h??"";aV=realScore.a??"";}
 
   // Bloqueio: admin bloqueia após início (sem resultsUnlocked); palpite bloqueia se confirmado ou se iniciou
   const adminLocked = viewMode==="admin" && started && !state.resultsUnlocked;
@@ -2260,14 +2260,18 @@ function buildKOCard(game, viewMode){
     pickAdvFoot=`<span class="adv-confirmed">✅ Aposta: ${advName} avança</span>`;
   }
 
-  // resultado oficial / quem avançou (view)
+  // resultado oficial no rodapé — só exibe se não há inputs visíveis (modo palpites sem resultado)
   let officialFoot="";
-  if(viewMode!=="admin" && hasResult){
+  if(viewMode==="palpites" && hasResult){
     officialFoot=`<span class="adv-lbl" style="color:#33433C">Resultado: ${realScore.h} × ${realScore.a}</span>`;
     if(realAdv){
       const advName=realAdv==="h"?hName:aName, advCode=realAdv==="h"?teams.h:teams.a;
       officialFoot+=` <span class="official-adv">Avançou: ${advCode?`<span class="af">${FLAG_SVG[advCode]||""}</span>`:""} ${advName}</span>`;
     }
+  } else if(viewMode==="view" && realAdv){
+    // no modo view o placar já está nos inputs — só mostra quem avançou
+    const advName=realAdv==="h"?hName:aName, advCode=realAdv==="h"?teams.h:teams.a;
+    officialFoot=`<span class="official-adv">Avançou: ${advCode?`<span class="af">${FLAG_SVG[advCode]||""}</span>`:""} ${advName}</span>`;
   }
 
   // badge pontuação
