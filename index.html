@@ -1212,13 +1212,19 @@ async function ensureKOPicks(name){
   if(!state.koPicks[name]) state.koPicks[name] = await storeGet("ko_picks_"+slug(name)) || {};
   return state.koPicks[name];
 }
-async function saveKOPicks(name){ await storeSet("ko_picks_"+slug(name), state.koPicks[name]); }
+async function saveKOPicks(name){
+  if(!name || !state.koPicks[name]) return; // nunca grava undefined
+  await storeSet("ko_picks_"+slug(name), state.koPicks[name]);
+}
 const KO_PEN_KEY = "ko_penaltis";
 const saveKOResults = debounce(async()=>{
-  await storeSet(KO_RES_KEY,state.koResults);
-  await storeSet(KO_ADV_KEY,state.koAdvance);
-  await storeSet(KO_TEAMS_KEY,state.koTeams);
-  await storeSet(KO_PEN_KEY,state.koPenalties);
+  await storeSet(KO_RES_KEY,    state.koResults);
+  await storeSet(KO_ADV_KEY,    state.koAdvance);
+  await storeSet(KO_PEN_KEY,    state.koPenalties);
+},400);
+// Times são gravados separadamente para não sobrescrever ao salvar placar
+const saveKOTeams = debounce(async()=>{
+  await storeSet(KO_TEAMS_KEY, state.koTeams);
 },400);
 
 // Autocomplete de países
@@ -1254,7 +1260,7 @@ function bindCountryPickers(container){
           state.koTeams[id]=state.koTeams[id]||{};
           if(side==="h"){state.koTeams[id].h=cc;state.koTeams[id].hn=cn;}
           else {state.koTeams[id].a=cc;state.koTeams[id].an=cn;}
-          await saveKOResults();
+          await saveKOTeams();
           render();
         });
       });
@@ -1451,6 +1457,7 @@ function renderParticipants(){
     btn.addEventListener("click", async ()=>{
       state.active = btn.dataset.p;
       await ensurePicks(state.active);
+      await ensureKOPicks(state.active);
       render();
     });
   });
@@ -1462,6 +1469,7 @@ function renderParticipants(){
     state.participants.push(name);
     state.active = name;
     await ensurePicks(name);
+    await ensureKOPicks(name);
     await saveParticipants();
     render();
   });
@@ -2239,10 +2247,11 @@ function buildKOCard(game, viewMode){
   if(viewMode==="palpites"){hV=pick.h??"";aV=pick.a??"";}
   else{hV=realScore.h??"";aV=realScore.a??"";}
 
-  // Bloqueio: admin bloqueia após início (sem resultsUnlocked); palpite bloqueia se confirmado ou se iniciou
+  // Bloqueio: admin bloqueia após início (sem resultsUnlocked); palpite bloqueia se confirmado ou se iniciou; view sempre desabilitado
   const adminLocked = viewMode==="admin" && started && !state.resultsUnlocked;
   const pickLocked  = viewMode==="palpites" && (started || confirmed);
-  const canInput = !adminLocked && !pickLocked && (viewMode==="admin" || hasTeams);
+  const viewLocked  = viewMode==="view"; // resultados sem senha — sempre só leitura
+  const canInput = !adminLocked && !pickLocked && !viewLocked && (viewMode==="admin" || hasTeams);
   const dis = canInput ? "" : "disabled";
   const kmode = viewMode==="admin" ? "admin" : "pick";
 
@@ -2302,8 +2311,8 @@ function buildKOCard(game, viewMode){
       </button>
     </div>` : "";
 
-    const pickersH = buildCountryPicker(game.id,"h",teams.h,teams.hn,false);
-    const pickersA = buildCountryPicker(game.id,"a",teams.a,teams.an,false);
+    const pickersH = buildCountryPicker(game.id,"h",teams.h,teams.hn, adminLocked);
+    const pickersA = buildCountryPicker(game.id,"a",teams.a,teams.an, adminLocked);
     adminFoot = `${penHtml}${advHtml}<div class="ko-team-inputs">${pickersH}${pickersA}</div>`;
   }
 
