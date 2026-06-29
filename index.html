@@ -613,7 +613,9 @@ body{margin:0;}
 .adv-btn:disabled{opacity:.45;cursor:not-allowed;}
 .adv-btn .af{display:inline-block;width:17px;height:12px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.1);line-height:0;}
 .adv-btn .af svg{display:block;width:100%;height:100%;}
-.adv-confirmed{font-family:'Oswald',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:rgba(52,199,123,.14);color:var(--turf-dim);border:1px solid var(--turf);}
+.adv-confirmed{font-family:'Oswald',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;border-radius:999px;background:rgba(52,199,123,.14);color:var(--turf-dim);border:1px solid var(--turf);display:inline-flex;align-items:center;gap:5px;line-height:1.2;}
+.adv-confirmed .af-inline{display:inline-block;width:16px;height:12px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.1);flex:0 0 auto;line-height:0;}
+.adv-confirmed .af-inline svg{display:block;width:100%;height:100%;}
 .official-adv{font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:#33433C;display:flex;align-items:center;gap:5px;justify-content:center;}
 .official-adv .af{display:inline-block;width:17px;height:12px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px #E1E6E3;line-height:0;}
 .official-adv .af svg{display:block;width:100%;height:100%;}
@@ -2325,16 +2327,21 @@ function buildKOCard(game, viewMode){
           </button>
         </div>`;
       }
-    } else if(!hasResult && pick.locked && pickHasAdv){
-      // palpite confirmado e era empate — mostrar quem o user escolheu
-      const advName=pick.advance==="h"?hName:aName;
-      const advCode=pick.advance==="h"?teams.h:teams.a;
-      pickAdvFoot=`<span class="adv-confirmed">✅ Aposta: ${advCode?`<span class="af" style="display:inline-block;width:14px;height:10px;overflow:hidden;border-radius:1px;vertical-align:middle">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
+    } else if(!hasResult && pick.locked){
+      if(pickHasAdv){
+        // confirmado com escolha — exibir quem o usuário apostou
+        const advName=pick.advance==="h"?hName:aName;
+        const advCode=pick.advance==="h"?teams.h:teams.a;
+        pickAdvFoot=`<span class="adv-confirmed">✅ Aposta: ${advCode?`<span class="af" class="af-inline">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
+      } else if(pickIsDrawn){
+        // confirmado com empate mas sem escolha — mostrar seletor desbloqueado (só admin pode desbloquear o palpite)
+        pickAdvFoot=`<span class="adv-lbl" style="color:#E07B00">⚠️ Empate confirmado sem escolha de avanço</span>`;
+      }
     } else if(hasResult && pick.locked && pickHasAdv){
       // após resultado — mostrar o palpite de quem avança para confirmar o bônus
       const advName=pick.advance==="h"?hName:aName;
       const advCode=pick.advance==="h"?teams.h:teams.a;
-      pickAdvFoot=`<span class="adv-confirmed">Apostou: ${advCode?`<span class="af" style="display:inline-block;width:14px;height:10px;overflow:hidden;border-radius:1px;vertical-align:middle">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
+      pickAdvFoot=`<span class="adv-confirmed">Apostou: ${advCode?`<span class="af" class="af-inline">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
     }
   }
 
@@ -2454,15 +2461,23 @@ function bindKOSection(container, viewMode){
         state.koPicks[state.active]=state.koPicks[state.active]||{};
         state.koPicks[state.active][id]=state.koPicks[state.active][id]||{};
         state.koPicks[state.active][id][side]=v;
-        // não persiste antes da confirmação — apenas atualiza memória
-        // auto-abre confirmação ao preencher ambos os campos
         const p=state.koPicks[state.active][id];
         const allGames=KO_PHASES.flatMap(ph=>ph.games);
         const game=allGames.find(g=>g.id===id);
         const bothFilled=(p.h||"")!==""&&(p.a||"")!=="";
+        const isDrawPick = bothFilled && +p.h===+p.a;
         if(bothFilled && !p.locked && !koGameStarted(game) && pendingConfirmKOId===null){
           inp.blur();
-          showKOConfirmModal(id);
+          if(isDrawPick){
+            // empate: salva e faz render para mostrar o seletor de quem avança
+            // a confirmação só acontece após o usuário clicar em um dos times
+            await saveKOPicks(state.active);
+            render();
+          } else {
+            // resultado definido: abre modal de confirmação diretamente
+            await saveKOPicks(state.active);
+            showKOConfirmModal(id);
+          }
         } else {
           await saveKOPicks(state.active);
         }
@@ -2488,9 +2503,19 @@ function bindKOSection(container, viewMode){
       state.koPicks[state.active]=state.koPicks[state.active]||{};
       state.koPicks[state.active][id]=state.koPicks[state.active][id]||{};
       const cur=state.koPicks[state.active][id].advance;
-      state.koPicks[state.active][id].advance=cur===adv?undefined:adv;
+      // toggle: clicar no mesmo time desmarca
+      state.koPicks[state.active][id].advance = cur===adv ? undefined : adv;
       await saveKOPicks(state.active);
-      render();
+      // se o palpite está preenchido e não confirmado, abre modal de confirmação
+      const p=state.koPicks[state.active][id];
+      const allGames=KO_PHASES.flatMap(ph=>ph.games);
+      const game=allGames.find(g=>g.id===id);
+      const bothFilled=(p.h||"")!==""&&(p.a||"")!=="";
+      if(bothFilled && !p.locked && p.advance && !koGameStarted(game) && pendingConfirmKOId===null){
+        showKOConfirmModal(id);
+      } else {
+        render();
+      }
     });
   });
 
