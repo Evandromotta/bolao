@@ -651,6 +651,35 @@ body{margin:0;}
 .ko-note{font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:#8C9A95;text-align:center;max-width:560px;margin:0 auto;padding:0 0 10px;}
 
 
+
+/* ---------- PÊNALTIS ---------- */
+.penalty-wrap{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;
+  margin-top:4px;
+}
+.penalty-lbl{
+  font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;
+  letter-spacing:.06em;text-transform:uppercase;color:#E07B00;
+}
+.penalty-score{display:flex;align-items:center;gap:5px;}
+.penalty-score input{
+  width:34px;height:34px;text-align:center;
+  font-family:'Oswald',sans-serif;font-weight:700;font-size:1.1rem;
+  color:#E07B00;background:#FFF8F0;border:1px solid #F5C18A;border-radius:8px;
+  outline:none;-moz-appearance:textfield;
+}
+.penalty-score input::-webkit-outer-spin-button,
+.penalty-score input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.penalty-score input:focus{border-color:#E07B00;box-shadow:0 0 0 3px rgba(224,123,0,.15);}
+.penalty-score input:disabled{background:#F5EFE6;color:#C4A07A;border-color:#EDD9B8;cursor:not-allowed;}
+.penalty-score .kox{font-family:'Oswald',sans-serif;font-weight:700;color:#C4A07A;}
+.pen-result-badge{
+  font-family:'Oswald',sans-serif;font-weight:700;font-size:.68rem;
+  letter-spacing:.05em;text-transform:uppercase;
+  padding:3px 10px;border-radius:999px;
+  background:rgba(224,123,0,.12);color:#B85C00;border:1px solid #E07B00;
+}
+
 /* ---------- SUB-NAV 1ª / 2ª FASE ---------- */
 .subfase-nav{
   display:flex;
@@ -1013,6 +1042,7 @@ let state = {
   koTeams: {},
   koResults: {},
   koAdvance: {},
+  koPenalties: {},
   koPicks: {},
 };
 
@@ -1181,10 +1211,12 @@ async function ensureKOPicks(name){
   return state.koPicks[name];
 }
 async function saveKOPicks(name){ await storeSet("ko_picks_"+slug(name), state.koPicks[name]); }
+const KO_PEN_KEY = "ko_penaltis";
 const saveKOResults = debounce(async()=>{
   await storeSet(KO_RES_KEY,state.koResults);
   await storeSet(KO_ADV_KEY,state.koAdvance);
   await storeSet(KO_TEAMS_KEY,state.koTeams);
+  await storeSet(KO_PEN_KEY,state.koPenalties);
 },400);
 
 // Autocomplete de países
@@ -1840,7 +1872,8 @@ async function init(){
   // ── sistema novo (mata-mata completo) ──
   state.koTeams   = await storeGet(KO_TEAMS_KEY) || {};
   state.koResults = await storeGet(KO_RES_KEY)   || {};
-  state.koAdvance = await storeGet(KO_ADV_KEY)   || {};
+  state.koAdvance   = await storeGet(KO_ADV_KEY)   || {};
+  state.koPenalties = await storeGet(KO_PEN_KEY)   || {};
 
   if(state.participants.length) state.active = state.participants[0];
   render();
@@ -2226,12 +2259,39 @@ function buildKOCard(game, viewMode){
       data-ko="${game.id}" data-side="a" data-kmode="${kmode}">
   </div>`;
 
-  // admin: quem avançou + picker de países
+  // admin: pênaltis (se empate) + quem avançou + picker de países
   let adminFoot="";
   if(viewMode==="admin"){
+    const pen = state.koPenalties[game.id] || {};
+    const isDrawAdmin = hasResult && +realScore.h === +realScore.a;
+
+    // campos de pênaltis — aparecem sempre que o placar estiver empatado
+    // ao digitar os pênaltis, koAdvance é atualizado automaticamente
+    let penHtml = "";
+    if(isDrawAdmin || (!hasResult && (hV||"")!=="" && (aV||"")!=="" && +hV===+aV)){
+      const penDis = started && !state.resultsUnlocked ? "disabled" : "";
+      penHtml = `<div class="penalty-wrap">
+        <span class="penalty-lbl">🥅 Pênaltis:</span>
+        <div class="penalty-score">
+          <input type="number" min="0" max="20" inputmode="numeric" value="${pen.h??""}" ${penDis}
+            data-ko-pen="${game.id}" data-side="h" placeholder="0">
+          <span class="kox">×</span>
+          <input type="number" min="0" max="20" inputmode="numeric" value="${pen.a??""}" ${penDis}
+            data-ko-pen="${game.id}" data-side="a" placeholder="0">
+        </div>
+        ${pen.h!==undefined && pen.a!==undefined && pen.h!=="" && pen.a!=="" ?
+          (pen.h>pen.a
+            ? `<span class="pen-result-badge">${teams.h?`<span class="af">${FLAG_SVG[teams.h]||""}</span>`:""} ${hName} avança</span>`
+            : pen.a>pen.h
+            ? `<span class="pen-result-badge">${teams.a?`<span class="af">${FLAG_SVG[teams.a]||""}</span>`:""} ${aName} avança</span>`
+            : "") : ""}
+      </div>`;
+    }
+
+    // botões "Quem avançou" — mostrar mesmo em empate (para correção manual)
     const selH=realAdv==="h"?"on":"", selA=realAdv==="a"?"on":"";
-    const advHtml = hasTeams ? `<div class="adv-picker">
-      <span class="adv-lbl">Quem avançou:</span>
+    const advHtml = hasTeams ? `<div class="adv-picker" style="margin-top:4px">
+      <span class="adv-lbl">Avançou:</span>
       <button class="adv-btn ${selH}" data-ko-adv="${game.id}" data-adv="h">
         ${teams.h?`<span class="af">${FLAG_SVG[teams.h]||""}</span>`:""} ${hName}
       </button>
@@ -2239,27 +2299,43 @@ function buildKOCard(game, viewMode){
         ${teams.a?`<span class="af">${FLAG_SVG[teams.a]||""}</span>`:""} ${aName}
       </button>
     </div>` : "";
+
     const pickersH = buildCountryPicker(game.id,"h",teams.h,teams.hn,false);
     const pickersA = buildCountryPicker(game.id,"a",teams.a,teams.an,false);
-    adminFoot = `${advHtml}<div class="ko-team-inputs">${pickersH}${pickersA}</div>`;
+    adminFoot = `${penHtml}${advHtml}<div class="ko-team-inputs">${pickersH}${pickersA}</div>`;
   }
 
-  // palpite: quem avança (só antes do resultado + se não confirmado)
+  // palpite: seletor de quem avança aparece quando palpite é empate
   let pickAdvFoot="";
-  if(viewMode==="palpites" && hasTeams && !pick.locked && !hasResult){
-    const selH=pick.advance==="h"?"on":"", selA=pick.advance==="a"?"on":"";
-    pickAdvFoot=`<div class="adv-picker">
-      <span class="adv-lbl">Se empatar, avança:</span>
-      <button class="adv-btn ${selH}" data-ko-pick-adv="${game.id}" data-adv="h">
-        ${teams.h?`<span class="af">${FLAG_SVG[teams.h]||""}</span>`:""} ${hName}
-      </button>
-      <button class="adv-btn ${selA}" data-ko-pick-adv="${game.id}" data-adv="a">
-        ${teams.a?`<span class="af">${FLAG_SVG[teams.a]||""}</span>`:""} ${aName}
-      </button>
-    </div>`;
-  } else if(viewMode==="palpites" && pick.advance && !hasResult){
-    const advName=pick.advance==="h"?hName:aName;
-    pickAdvFoot=`<span class="adv-confirmed">✅ Aposta: ${advName} avança</span>`;
+  const pickIsDrawn = (pick.h||"")!=="" && (pick.a||"")!=="" && +pick.h===+pick.a;
+  const pickHasAdv  = !!(pick.advance);
+
+  if(viewMode==="palpites" && hasTeams){
+    if(!hasResult && !pick.locked){
+      // seletor ativo — aparece quando o palpite está empatado OU se o user já escolheu antes
+      if(pickIsDrawn || pickHasAdv){
+        const selH=pick.advance==="h"?"on":"", selA=pick.advance==="a"?"on":"";
+        pickAdvFoot=`<div class="adv-picker">
+          <span class="adv-lbl">Se empatar, avança:</span>
+          <button class="adv-btn ${selH}" data-ko-pick-adv="${game.id}" data-adv="h">
+            ${teams.h?`<span class="af">${FLAG_SVG[teams.h]||""}</span>`:""} ${hName}
+          </button>
+          <button class="adv-btn ${selA}" data-ko-pick-adv="${game.id}" data-adv="a">
+            ${teams.a?`<span class="af">${FLAG_SVG[teams.a]||""}</span>`:""} ${aName}
+          </button>
+        </div>`;
+      }
+    } else if(!hasResult && pick.locked && pickHasAdv){
+      // palpite confirmado e era empate — mostrar quem o user escolheu
+      const advName=pick.advance==="h"?hName:aName;
+      const advCode=pick.advance==="h"?teams.h:teams.a;
+      pickAdvFoot=`<span class="adv-confirmed">✅ Aposta: ${advCode?`<span class="af" style="display:inline-block;width:14px;height:10px;overflow:hidden;border-radius:1px;vertical-align:middle">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
+    } else if(hasResult && pick.locked && pickHasAdv){
+      // após resultado — mostrar o palpite de quem avança para confirmar o bônus
+      const advName=pick.advance==="h"?hName:aName;
+      const advCode=pick.advance==="h"?teams.h:teams.a;
+      pickAdvFoot=`<span class="adv-confirmed">Apostou: ${advCode?`<span class="af" style="display:inline-block;width:14px;height:10px;overflow:hidden;border-radius:1px;vertical-align:middle">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
+    }
   }
 
   // resultado oficial no rodapé — só exibe se não há inputs visíveis (modo palpites sem resultado)
@@ -2339,6 +2415,26 @@ function bindKOSection(container, viewMode){
   sec.querySelectorAll(".ko-pill").forEach(btn=>{
     btn.addEventListener("click",async()=>{
       state.koPhase=btn.dataset.kophase;
+      render();
+    });
+  });
+
+  // inputs de pênaltis (admin)
+  sec.querySelectorAll("input[data-ko-pen]").forEach(inp=>{
+    inp.addEventListener("input", async()=>{
+      const id=+inp.dataset.koPen, side=inp.dataset.side;
+      let v=inp.value;
+      if(v!==""){let n=Math.max(0,Math.min(30,parseInt(v,10)||0));v=String(n);inp.value=v;}
+      state.koPenalties[id]=state.koPenalties[id]||{};
+      state.koPenalties[id][side]=v;
+      // se ambos os campos de pênalti estiverem preenchidos, define automaticamente quem avançou
+      const pen=state.koPenalties[id];
+      if((pen.h||"")!=="" && (pen.a||"")!==""){
+        if(+pen.h > +pen.a) state.koAdvance[id]="h";
+        else if(+pen.a > +pen.h) state.koAdvance[id]="a";
+        // empate nos pênaltis: não define (improvável, mas mantém o estado anterior)
+      }
+      saveKOResults();
       render();
     });
   });
