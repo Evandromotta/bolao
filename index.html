@@ -614,7 +614,7 @@ body{margin:0;}
 .adv-btn .af{display:inline-block;width:17px;height:12px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.1);line-height:0;}
 .adv-btn .af svg{display:block;width:100%;height:100%;}
 .adv-confirmed{font-family:'Oswald',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;border-radius:999px;background:rgba(52,199,123,.14);color:var(--turf-dim);border:1px solid var(--turf);display:inline-flex;align-items:center;gap:5px;line-height:1.2;}
-.adv-confirmed .af-inline{display:inline-block;width:16px;height:12px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.1);flex:0 0 auto;line-height:0;}
+.adv-confirmed .af-inline{display:inline-block;width:22px;height:16px;border-radius:3px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.12);flex:0 0 auto;line-height:0;}
 .adv-confirmed .af-inline svg{display:block;width:100%;height:100%;}
 .official-adv{font-family:'Oswald',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:#33433C;display:flex;align-items:center;gap:5px;justify-content:center;}
 .official-adv .af{display:inline-block;width:17px;height:12px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px #E1E6E3;line-height:0;}
@@ -2332,7 +2332,7 @@ function buildKOCard(game, viewMode){
         // confirmado com escolha — exibir quem o usuário apostou
         const advName=pick.advance==="h"?hName:aName;
         const advCode=pick.advance==="h"?teams.h:teams.a;
-        pickAdvFoot=`<span class="adv-confirmed">✅ Aposta: ${advCode?`<span class="af" class="af-inline">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
+        pickAdvFoot=`<span class="adv-confirmed">✅ Aposta: ${advCode?`<span class="af-inline">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
       } else if(pickIsDrawn){
         // confirmado com empate mas sem escolha — mostrar seletor desbloqueado (só admin pode desbloquear o palpite)
         pickAdvFoot=`<span class="adv-lbl" style="color:#E07B00">⚠️ Empate confirmado sem escolha de avanço</span>`;
@@ -2341,7 +2341,7 @@ function buildKOCard(game, viewMode){
       // após resultado — mostrar o palpite de quem avança para confirmar o bônus
       const advName=pick.advance==="h"?hName:aName;
       const advCode=pick.advance==="h"?teams.h:teams.a;
-      pickAdvFoot=`<span class="adv-confirmed">Apostou: ${advCode?`<span class="af" class="af-inline">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
+      pickAdvFoot=`<span class="adv-confirmed">Apostou: ${advCode?`<span class="af-inline">${FLAG_SVG[advCode]||""}</span>`:""} ${advName} avança</span>`;
     }
   }
 
