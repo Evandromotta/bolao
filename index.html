@@ -1227,11 +1227,17 @@ function koResolveTeams(gid){
   const allGames = KO_PHASES.flatMap(ph=>ph.games);
   const g = allGames.find(x=>x.id===gid);
   if(!g) return {h:null,hn:null,a:null,an:null};
-  const saved = state.koTeams[gid] || {};
-  // Para jogos com seed estático (16 avos), usar seed como base
+
+  // Times do admin só são usados nos 16 avos (seed manual para times sem seed estático)
+  // Para oitavas em diante, a propagação é sempre automática — ignora koTeams
+  const isR32 = gid >= 201 && gid <= 216;
+  const saved = isR32 ? (state.koTeams[gid] || {}) : {};
+
+  // Base: seed estático (16 avos têm ih/ihn/ia/ian)
   let tH = {c: g.ih||null, n: g.ihn||null};
   let tA = {c: g.ia||null, n: g.ian||null};
-  // Para jogos propagados, resolver recursivamente
+
+  // Propagação recursiva por fase
   if(g.r32h) tH = koGetWinner(g.r32h);
   if(g.r32a) tA = koGetWinner(g.r32a);
   if(g.r16h) tH = koGetWinner(g.r16h);
@@ -1243,7 +1249,8 @@ function koResolveTeams(gid){
   // perdedores (3º lugar)
   if(g.sfLh) tH = koGetLoser(g.sfLh);
   if(g.sfLa) tA = koGetLoser(g.sfLa);
-  // sobrescrever com o que o admin salvou manualmente
+
+  // Sobrescreve com o que o admin salvou manualmente (só nos 16 avos)
   return {
     h:  saved.h  !== undefined ? saved.h  : tH.c,
     hn: saved.hn !== undefined ? saved.hn : tH.n,
@@ -2218,9 +2225,8 @@ function buildKOCard(game, viewMode){
       : {c: teams2[side==="h"?"h":"a"], n: teams2[side==="h"?"hn":"an"]}; // placeholder
   }
   const seed = { h: game.ih||null, hn: game.ihn||null, a: game.ia||null, an: game.ian||null };
-  const saved = state.koTeams[game.id] || {};
 
-  // Usar resolução global recursiva
+  // Usar resolução global recursiva (já incorpora seed + koTeams para R32 + propagação)
   const teams = koResolveTeams(game.id);
   const hasTeams = !!(teams.hn || teams.an);
   const realScore = state.koResults[game.id] || {};
