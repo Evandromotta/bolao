@@ -907,7 +907,7 @@ const groupColor = g => `hsl(${groupHue(g)}, 55%, 52%)`;
 const RESULTS_KEY = "resultados_oficiais";
 const PARTICIPANTS_KEY = "participantes_bolao";
 const MANUAL_KEY = "resultados_manuais";
-const KO_PHASES = [{"phase": "R32", "label": "16 Avos", "games": [{"id": 203, "slot": 1, "label": "J1", "date": "29/06", "time": "17:30", "city": "Boston", "desc": "1º Jogo — 16 Avos", "ih": "de", "ihn": "Alemanha", "ia": "py", "ian": "Paraguai"}, {"id": 206, "slot": 2, "label": "J2", "date": "30/06", "time": "18:00", "city": "Nova Jersey", "desc": "2º Jogo — 16 Avos", "ih": "fr", "ihn": "França", "ia": "se", "ian": "Suécia"}, {"id": 201, "slot": 3, "label": "J3", "date": "28/06", "time": "16:00", "city": "Los Angeles", "desc": "3º Jogo — 16 Avos", "ih": "za", "ihn": "África do Sul", "ia": "ca", "ian": "Canadá"}, {"id": 204, "slot": 4, "label": "J4", "date": "29/06", "time": "22:00", "city": "El Gigante de Acero", "desc": "4º Jogo — 16 Avos", "ih": "nl", "ihn": "Holanda", "ia": "ma", "ian": "Marrocos"}, {"id": 212, "slot": 5, "label": "J5", "date": "02/07", "time": "20:00", "city": "Toronto", "desc": "5º Jogo — 16 Avos", "ih": "pt", "ihn": "Portugal", "ia": "hr", "ian": "Croácia"}, {"id": 211, "slot": 6, "label": "J6", "date": "02/07", "time": "16:00", "city": "Los Angeles", "desc": "6º Jogo — 16 Avos", "ih": "es", "ihn": "Espanha", "ia": "at", "ian": "Áustria"}, {"id": 210, "slot": 7, "label": "J7", "date": "01/07", "time": "21:00", "city": "Santa Clara", "desc": "7º Jogo — 16 Avos", "ih": "us", "ihn": "Estados Unidos", "ia": "ba", "ian": "Bósnia e Herzegovina"}, {"id": 209, "slot": 8, "label": "J8", "date": "01/07", "time": "17:00", "city": "Seattle", "desc": "8º Jogo — 16 Avos", "ih": "be", "ihn": "Bélgica", "ia": "sn", "ian": "Senegal"}, {"id": 202, "slot": 9, "label": "J9", "date": "29/06", "time": "14:00", "city": "Houston", "desc": "9º Jogo — 16 Avos", "ih": "br", "ihn": "Brasil", "ia": "jp", "ian": "Japão"}, {"id": 205, "slot": 10, "label": "J10", "date": "30/06", "time": "14:00", "city": "Dallas", "desc": "10º Jogo — 16 Avos", "ih": "ci", "ihn": "Costa do Marfim", "ia": "no", "ian": "Noruega"}, {"id": 207, "slot": 11, "label": "J11", "date": "30/06", "time": "23:00", "city": "Estádio Azteca", "desc": "11º Jogo — 16 Avos", "ih": "mx", "ihn": "México", "ia": "ec", "ian": "Equador"}, {"id": 208, "slot": 12, "label": "J12", "date": "01/07", "time": "13:00", "city": "Atlanta", "desc": "12º Jogo — 16 Avos", "ih": "gb-eng", "ihn": "Inglaterra", "ia": "cd", "ian": "RD Congo"}, {"id": 215, "slot": 13, "label": "J13", "date": "03/07", "time": "19:00", "city": "Miami", "desc": "13º Jogo — 16 Avos", "ih": "ar", "ihn": "Argentina", "ia": "cv", "ian": "Cabo Verde"}, {"id": 214, "slot": 14, "label": "J14", "date": "03/07", "time": "15:00", "city": "Dallas", "desc": "14º Jogo — 16 Avos", "ih": "au", "ihn": "Austrália", "ia": "eg", "ian": "Egito"}, {"id": 213, "slot": 15, "label": "J15", "date": "03/07", "time": "00:00", "city": "Vancouver", "desc": "15º Jogo — 16 Avos", "ih": "ch", "ihn": "Suíça", "ia": "dz", "ian": "Argélia"}, {"id": 216, "slot": 16, "label": "J16", "date": "03/07", "time": "22:30", "city": "Kansas City", "desc": "16º Jogo — 16 Avos", "ih": "co", "ihn": "Colômbia", "ia": "gh", "ian": "Gana"}]}, {"phase": "R16", "label": "Oitavas", "games": [{"id": 217, "label": "OF1", "date": "04/07", "time": "18:00", "city": "Filadélfia", "desc": "Venc. J1 × Venc. J2", "r32h": 203, "r32a": 206}, {"id": 218, "label": "OF2", "date": "04/07", "time": "14:00", "city": "Houston", "desc": "Venc. J3 × Venc. J4", "r32h": 201, "r32a": 204}, {"id": 219, "label": "OF3", "date": "06/07", "time": "16:00", "city": "Dallas", "desc": "Venc. J5 × Venc. J6", "r32h": 212, "r32a": 211}, {"id": 220, "label": "OF4", "date": "06/07", "time": "21:00", "city": "Seatle Field", "desc": "Venc. J7 × Venc. J8", "r32h": 210, "r32a": 209}, {"id": 221, "label": "OF5", "date": "05/07", "time": "17:00", "city": "Nova Jersey", "desc": "Venc. J9 × Venc. J10", "r32h": 202, "r32a": 205}, {"id": 222, "label": "OF6", "date": "05/07", "time": "21:00", "city": "Azteca", "desc": "Venc. J11 × Venc. J12", "r32h": 207, "r32a": 208}, {"id": 223, "label": "OF7", "date": "07/07", "time": "13:00", "city": "Atlanta", "desc": "Venc. J13 × Venc. J14", "r32h": 215, "r32a": 214}, {"id": 224, "label": "OF8", "date": "07/07", "time": "17:00", "city": "Vancouver", "desc": "Venc. J15 × Venc. J16", "r32h": 213, "r32a": 216}]}, {"phase": "QF", "label": "Quartas", "games": [{"id": 225, "label": "QF1", "date": "09/07", "time": "17:00", "city": "Boston", "desc": "Venc. OF1 × Venc. OF2", "r16h": 217, "r16a": 218}, {"id": 226, "label": "QF2", "date": "10/07", "time": "16:00", "city": "Los Angeles", "desc": "Venc. OF3 × Venc. OF4", "r16h": 219, "r16a": 220}, {"id": 227, "label": "QF3", "date": "11/07", "time": "18:00", "city": "Miami", "desc": "Venc. OF5 × Venc. OF6", "r16h": 221, "r16a": 222}, {"id": 228, "label": "QF4", "date": "11/07", "time": "21:00", "city": "Kansas City", "desc": "Venc. OF7 × Venc. OF8", "r16h": 223, "r16a": 224}]}, {"phase": "SF", "label": "Semifinal", "games": [{"id": 229, "label": "SF1", "date": "14/07", "time": "16:00", "city": "Dallas", "desc": "Venc. QF1 × Venc. QF2", "qfh": 225, "qfa": 226}, {"id": 230, "label": "SF2", "date": "15/07", "time": "16:00", "city": "Atlanta", "desc": "Venc. QF3 × Venc. QF4", "qfh": 227, "qfa": 228}]}, {"phase": "FIN", "label": "Final", "games": [{"id": 231, "label": "3º Lugar", "date": "18/07", "time": "17:00", "city": "Miami", "desc": "Perd. SF1 × Perd. SF2"}, {"id": 232, "label": "FINAL", "date": "19/07", "time": "16:00", "city": "Nova Jersey", "desc": "Venc. SF1 × Venc. SF2"}]}];
+const KO_PHASES = [{"phase": "R32", "label": "16 Avos", "games": [{"id": 203, "slot": 1, "label": "J1", "date": "28/06", "time": "16:00", "city": "Boston", "desc": "1º Jogo — 16 Avos", "ih": "de", "ihn": "Alemanha", "ia": "py", "ian": "Paraguai"}, {"id": 206, "slot": 2, "label": "J2", "date": "29/06", "time": "15:00", "city": "Atlanta", "desc": "2º Jogo — 16 Avos", "ih": "fr", "ihn": "França", "ia": "se", "ian": "Suécia"}, {"id": 201, "slot": 3, "label": "J3", "date": "28/06", "time": "13:00", "city": "Cidade do México", "desc": "3º Jogo — 16 Avos", "ih": "za", "ihn": "África do Sul", "ia": "ca", "ian": "Canadá"}, {"id": 204, "slot": 4, "label": "J4", "date": "28/06", "time": "19:00", "city": "Miami", "desc": "4º Jogo — 16 Avos", "ih": "nl", "ihn": "Holanda", "ia": "ma", "ian": "Marrocos"}, {"id": 212, "slot": 5, "label": "J5", "date": "02/07", "time": "15:00", "city": "Filadélfia", "desc": "5º Jogo — 16 Avos", "ih": "pt", "ihn": "Portugal", "ia": "hr", "ian": "Croácia"}, {"id": 211, "slot": 6, "label": "J6", "date": "02/07", "time": "19:00", "city": "Dallas", "desc": "6º Jogo — 16 Avos", "ih": "es", "ihn": "Espanha", "ia": "at", "ian": "Áustria"}, {"id": 210, "slot": 7, "label": "J7", "date": "01/07", "time": "15:00", "city": "Los Angeles", "desc": "7º Jogo — 16 Avos", "ih": "us", "ihn": "Estados Unidos", "ia": "ba", "ian": "Bósnia e Herzegovina"}, {"id": 209, "slot": 8, "label": "J8", "date": "01/07", "time": "19:00", "city": "Kansas City", "desc": "8º Jogo — 16 Avos", "ih": "be", "ihn": "Bélgica", "ia": "sn", "ian": "Senegal"}, {"id": 202, "slot": 9, "label": "J9", "date": "28/06", "time": "20:00", "city": "Nova Jersey", "desc": "9º Jogo — 16 Avos", "ih": "br", "ihn": "Brasil", "ia": "jp", "ian": "Japão"}, {"id": 205, "slot": 10, "label": "J10", "date": "29/06", "time": "19:00", "city": "São Francisco", "desc": "10º Jogo — 16 Avos", "ih": "ci", "ihn": "Costa do Marfim", "ia": "no", "ian": "Noruega"}, {"id": 207, "slot": 11, "label": "J11", "date": "30/06", "time": "15:00", "city": "Guadalajara", "desc": "11º Jogo — 16 Avos", "ih": "mx", "ihn": "México", "ia": "ec", "ian": "Equador"}, {"id": 208, "slot": 12, "label": "J12", "date": "30/06", "time": "19:00", "city": "Seattle", "desc": "12º Jogo — 16 Avos", "ih": "gb-eng", "ihn": "Inglaterra", "ia": "cd", "ian": "RD Congo"}, {"id": 215, "slot": 13, "label": "J13", "date": "03/07", "time": "17:00", "city": "Houston", "desc": "13º Jogo — 16 Avos", "ih": "ar", "ihn": "Argentina", "ia": "cv", "ian": "Cabo Verde"}, {"id": 214, "slot": 14, "label": "J14", "date": "03/07", "time": "20:30", "city": "Vancouver", "desc": "14º Jogo — 16 Avos", "ih": "au", "ihn": "Austrália", "ia": "eg", "ian": "Egito"}, {"id": 213, "slot": 15, "label": "J15", "date": "03/07", "time": "15:00", "city": "Toronto", "desc": "15º Jogo — 16 Avos", "ih": "ch", "ihn": "Suíça", "ia": "dz", "ian": "Argélia"}, {"id": 216, "slot": 16, "label": "J16", "date": "03/07", "time": "19:00", "city": "Monterrey", "desc": "16º Jogo — 16 Avos", "ih": "co", "ihn": "Colômbia", "ia": "gh", "ian": "Gana"}]}, {"phase": "R16", "label": "Oitavas", "games": [{"id": 217, "label": "OF1", "date": "04/07", "time": "15:00", "city": "Nova Jersey", "desc": "Venc. J3 × Venc. J4", "r32h": 202, "r32a": 204}, {"id": 218, "label": "OF2", "date": "04/07", "time": "19:00", "city": "Boston", "desc": "Venc. J1 × Venc. J2", "r32h": 203, "r32a": 201}, {"id": 219, "label": "OF3", "date": "05/07", "time": "15:00", "city": "Seattle", "desc": "Venc. J12 × Venc. J10", "r32h": 208, "r32a": 205}, {"id": 220, "label": "OF4", "date": "05/07", "time": "19:00", "city": "Atlanta", "desc": "Venc. J2 × Venc. J11", "r32h": 206, "r32a": 207}, {"id": 221, "label": "OF5", "date": "06/07", "time": "15:00", "city": "Los Angeles", "desc": "Venc. J7 × Venc. J15", "r32h": 210, "r32a": 213}, {"id": 222, "label": "OF6", "date": "06/07", "time": "19:00", "city": "Kansas City", "desc": "Venc. J6 × Venc. J8", "r32h": 211, "r32a": 209}, {"id": 223, "label": "OF7", "date": "07/07", "time": "15:00", "city": "Monterrey", "desc": "Venc. J16 × Venc. J14", "r32h": 216, "r32a": 214}, {"id": 224, "label": "OF8", "date": "07/07", "time": "19:00", "city": "São Francisco", "desc": "Venc. J13 × Venc. J5", "r32h": 212, "r32a": 215}]}, {"phase": "QF", "label": "Quartas", "games": [{"id": 225, "label": "QF1", "date": "09/07", "time": "16:00", "city": "Nova Jersey", "desc": "Venc. OF1 × Venc. OF2", "r16h": 217, "r16a": 218}, {"id": 226, "label": "QF2", "date": "10/07", "time": "16:00", "city": "Los Angeles", "desc": "Venc. OF3 × Venc. OF4", "r16h": 219, "r16a": 220}, {"id": 227, "label": "QF3", "date": "11/07", "time": "16:00", "city": "Kansas City", "desc": "Venc. OF5 × Venc. OF6", "r16h": 221, "r16a": 222}, {"id": 228, "label": "QF4", "date": "11/07", "time": "20:00", "city": "Dallas", "desc": "Venc. OF7 × Venc. OF8", "r16h": 223, "r16a": 224}]}, {"phase": "SF", "label": "Semifinal", "games": [{"id": 229, "label": "SF1", "date": "14/07", "time": "16:00", "city": "Atlanta", "desc": "Venc. QF1 × Venc. QF2", "qfh": 225, "qfa": 226}, {"id": 230, "label": "SF2", "date": "15/07", "time": "16:00", "city": "Dallas", "desc": "Venc. QF3 × Venc. QF4", "qfh": 227, "qfa": 228}]}, {"phase": "FIN", "label": "Final", "games": [{"id": 231, "label": "3º Lugar", "date": "18/07", "time": "16:00", "city": "Miami", "desc": "Perd. SF1 × Perd. SF2", "sfLh": 229, "sfLa": 230}, {"id": 232, "label": "FINAL", "date": "19/07", "time": "16:00", "city": "Nova Jersey", "desc": "Venc. SF1 × Venc. SF2", "sfh": 229, "sfa": 230}]}];
 
 const KO_TEAMS_KEY = "ko_teams";
 const KO_RES_KEY   = "ko_resultados";
@@ -1208,6 +1208,66 @@ function calcPointsKO(pick, realScore, realAdv){
   if(rh===ra&&realAdv&&pick.advance&&pick.advance===realAdv) pts+=1;
   return pts;
 }
+/* =====================================================================
+ * RESOLUÇÃO RECURSIVA DE TIMES NO CHAVEAMENTO
+ * ===================================================================== */
+
+// Retorna o resultado de um jogo KO (null se ainda não definido)
+function koWinnerSide(gid){
+  const res = state.koResults[gid];
+  const adv = state.koAdvance[gid];
+  if(!res || res.h===undefined || res.h==="") return null;
+  if(+res.h > +res.a) return "h";
+  if(+res.a > +res.h) return "a";
+  return adv || null; // empate: quem o admin marcou
+}
+
+// Resolve recursivamente os times de um jogo (seed estático → propagação de vencedor)
+function koResolveTeams(gid){
+  const allGames = KO_PHASES.flatMap(ph=>ph.games);
+  const g = allGames.find(x=>x.id===gid);
+  if(!g) return {h:null,hn:null,a:null,an:null};
+  const saved = state.koTeams[gid] || {};
+  // Para jogos com seed estático (16 avos), usar seed como base
+  let tH = {c: g.ih||null, n: g.ihn||null};
+  let tA = {c: g.ia||null, n: g.ian||null};
+  // Para jogos propagados, resolver recursivamente
+  if(g.r32h) tH = koGetWinner(g.r32h);
+  if(g.r32a) tA = koGetWinner(g.r32a);
+  if(g.r16h) tH = koGetWinner(g.r16h);
+  if(g.r16a) tA = koGetWinner(g.r16a);
+  if(g.qfh)  tH = koGetWinner(g.qfh);
+  if(g.qfa)  tA = koGetWinner(g.qfa);
+  if(g.sfh)  tH = koGetWinner(g.sfh);
+  if(g.sfa)  tA = koGetWinner(g.sfa);
+  // perdedores (3º lugar)
+  if(g.sfLh) tH = koGetLoser(g.sfLh);
+  if(g.sfLa) tA = koGetLoser(g.sfLa);
+  // sobrescrever com o que o admin salvou manualmente
+  return {
+    h:  saved.h  !== undefined ? saved.h  : tH.c,
+    hn: saved.hn !== undefined ? saved.hn : tH.n,
+    a:  saved.a  !== undefined ? saved.a  : tA.c,
+    an: saved.an !== undefined ? saved.an : tA.n,
+  };
+}
+
+// Retorna {c, n} do vencedor de um jogo, ou {c:null, n:"A definir"}
+function koGetWinner(gid){
+  const w = koWinnerSide(gid);
+  if(!w) return {c:null, n:"A definir"};
+  const t = koResolveTeams(gid);
+  return w==="h" ? {c:t.h, n:t.hn||"?"} : {c:t.a, n:t.an||"?"};
+}
+
+// Retorna {c, n} do PERDEDOR de um jogo (para o 3º lugar)
+function koGetLoser(gid){
+  const w = koWinnerSide(gid);
+  if(!w) return {c:null, n:"A definir"};
+  const t = koResolveTeams(gid);
+  return w==="h" ? {c:t.a, n:t.an||"?"} : {c:t.h, n:t.hn||"?"};
+}
+
 async function ensureKOPicks(name){
   if(!state.koPicks[name]) state.koPicks[name] = await storeGet("ko_picks_"+slug(name)) || {};
   return state.koPicks[name];
@@ -1780,33 +1840,10 @@ function showKOConfirmModal(gameId){
   const saved = state.koTeams[gameId] || {};
   const seed = { h: game.ih||null, hn: game.ihn||null, a: game.ia||null, an: game.ian||null };
 
-  function _winnerOf(gid){
-    const res = state.koResults[gid];
-    if(!res||res.h===undefined||res.h==="") return null;
-    if(+res.h>+res.a) return "h"; if(+res.a>+res.h) return "a";
-    return state.koAdvance[gid]||null;
-  }
-  function _resolveTeams(gid){
-    const s2=state.koTeams[gid]||{};
-    const allG=KO_PHASES.flatMap(ph=>ph.games);
-    const g2=allG.find(x=>x.id===gid);
-    if(!g2) return {};
-    return {h:s2.h??g2.ih??null,hn:s2.hn??g2.ihn??null,a:s2.a??g2.ia??null,an:s2.an??g2.ian??null};
-  }
-  function _getWinner(gid){
-    const w=_winnerOf(gid);
-    if(!w) return {c:null,n:"A definir"};
-    const t=_resolveTeams(gid);
-    return w==="h"?{c:t.h,n:t.hn||"?"}:{c:t.a,n:t.an||"?"};
-  }
-
-  let tH={c:seed.h,n:seed.hn}, tA={c:seed.a,n:seed.an};
-  if(game.r32h) tH=_getWinner(game.r32h);
-  if(game.r32a) tA=_getWinner(game.r32a);
-  if(game.r16h) tH=_getWinner(game.r16h);
-  if(game.r16a) tA=_getWinner(game.r16a);
-  if(game.qfh)  tH=_getWinner(game.qfh);
-  if(game.qfa)  tA=_getWinner(game.qfa);
+  // Usar funções globais recursivas
+  const tH_t = koResolveTeams(gameId);
+  const tH = {c: tH_t.h, n: tH_t.hn};
+  const tA = {c: tH_t.a, n: tH_t.an};
   const fH = tH.c ? `<span class="mini-flag">${FLAG_SVG[tH.c]||""}</span>` : "";
   const fA = tA.c ? `<span class="mini-flag">${FLAG_SVG[tA.c]||""}</span>` : "";
 
@@ -2180,53 +2217,11 @@ function buildKOCard(game, viewMode){
       ? {c: teams2[side==="h"?"h":"a"], n: teams2[side==="h"?"hn":"an"]}
       : {c: teams2[side==="h"?"h":"a"], n: teams2[side==="h"?"hn":"an"]}; // placeholder
   }
-  function resolveTeamsOf(gid){
-    const saved2 = state.koTeams[gid] || {};
-    const allGames = KO_PHASES.flatMap(ph=>ph.games);
-    const g2 = allGames.find(x=>x.id===gid);
-    if(!g2) return {};
-    const seedH = {h: g2.ih||null, hn: g2.ihn||null, a: g2.ia||null, an: g2.ian||null};
-    return {
-      h:  saved2.h  !== undefined ? saved2.h  : seedH.h,
-      hn: saved2.hn !== undefined ? saved2.hn : seedH.hn,
-      a:  saved2.a  !== undefined ? saved2.a  : seedH.a,
-      an: saved2.an !== undefined ? saved2.an : seedH.an,
-    };
-  }
-  function winnerOf(gid){
-    const res = state.koResults[gid];
-    const adv = state.koAdvance[gid];
-    if(!res || res.h===undefined || res.h==="") return null;
-    if(+res.h > +res.a) return "h";
-    if(+res.a > +res.h) return "a";
-    return adv || null;
-  }
-  function getTeamByWinner(gid){
-    const w = winnerOf(gid);
-    if(!w) return {c:null, n:"A definir"};
-    const t = resolveTeamsOf(gid);
-    return w==="h" ? {c:t.h, n:t.hn||"?"} : {c:t.a, n:t.an||"?"};
-  }
-
   const seed = { h: game.ih||null, hn: game.ihn||null, a: game.ia||null, an: game.ian||null };
   const saved = state.koTeams[game.id] || {};
 
-  // Para jogos sem seed (oitavas em diante), propaga automaticamente o vencedor
-  let autoH = {c: seed.h,  n: seed.hn};
-  let autoA = {c: seed.a,  n: seed.an};
-  if(game.r32h) autoH = getTeamByWinner(game.r32h);
-  if(game.r32a) autoA = getTeamByWinner(game.r32a);
-  if(game.r16h) autoH = getTeamByWinner(game.r16h);
-  if(game.r16a) autoA = getTeamByWinner(game.r16a);
-  if(game.qfh)  autoH = getTeamByWinner(game.qfh);
-  if(game.qfa)  autoA = getTeamByWinner(game.qfa);
-
-  const teams = {
-    h:  saved.h  !== undefined ? saved.h  : autoH.c,
-    hn: saved.hn !== undefined ? saved.hn : autoH.n,
-    a:  saved.a  !== undefined ? saved.a  : autoA.c,
-    an: saved.an !== undefined ? saved.an : autoA.n,
-  };
+  // Usar resolução global recursiva
+  const teams = koResolveTeams(game.id);
   const hasTeams = !!(teams.hn || teams.an);
   const realScore = state.koResults[game.id] || {};
   const realAdv = state.koAdvance[game.id];
